@@ -1,0 +1,4 @@
+#pattern  filter=crypt diff=crypt
+*.docx  filter=crypt diff=crypt
+*.xlsx  filter=crypt diff=crypt
+*.pdf  filter=crypt diff=crypt
