@@ -2,3 +2,11 @@
 *.docx  filter=crypt diff=crypt
 *.xlsx  filter=crypt diff=crypt
 *.pdf  filter=crypt diff=crypt
+*.tex  filter=crypt diff=crypt
+*.sty  filter=crypt diff=crypt
+*.jpg  filter=crypt diff=crypt
+*.bib  filter=crypt diff=crypt
+*.tcp  filter=crypt diff=crypt
+*.tps  filter=crypt diff=crypt
+*.adoc  filter=crypt diff=crypt
+
