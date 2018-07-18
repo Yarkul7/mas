@@ -1,120 +1,111 @@
-% **************************************************************************************************************
-% A Classic Thesis Style
-% An Homage to The Elements of Typographic Style
-%
-% Copyright (C) 2018 André Miede and Ivo Pletikosić
-%
-% If you like the style then I would appreciate a postcard. My address
-% can be found in the file ClassicThesis.pdf. A collection of the
-% postcards I received so far is available online at
-% http://postcards.miede.de
-%
-% License:
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2 of the License, or
-% (at your option) any later version.
-%
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-%
-% You should have received a copy of the GNU General Public License
-% along with this program; see the file COPYING.  If not, write to
-% the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-% Boston, MA 02111-1307, USA.
-%
-% PLEASE SEE ALSO THE AUTHORS' NOTE REGARDING THIS LICENSE
-% IN THE DOCUMENTATION (ClassicThesis.pdf --> Chapter 1 / Chapter01.tex)
-% **************************************************************************************************************
-\RequirePackage{silence} % :-\
-    \WarningFilter{scrreprt}{Usage of package `titlesec'}
-    %\WarningFilter{scrreprt}{Activating an ugly workaround}
-    \WarningFilter{titlesec}{Non standard sectioning command detected}
-\documentclass[ twoside,openright,titlepage,numbers=noenddot,%1headlines,
-                headinclude,footinclude,cleardoublepage=empty,abstract=on,
-                BCOR=5mm,paper=a4,fontsize=11pt
-                ]{scrreprt}
-
-%********************************************************************
-% Note: Make all your adjustments in here
-%*******************************************************
-\input{classicthesis-config}
-
-%********************************************************************
-% Bibliographies
-%*******************************************************
-\addbibresource{Bibliography.bib}
-\addbibresource[label=ownpubs]{AMiede_Publications.bib}
-
-%********************************************************************
-% Hyphenation
-%*******************************************************
-%\hyphenation{put special hyphenation here}
-
-% ********************************************************************
-% GO!GO!GO! MOVE IT!
-%*******************************************************
-\begin{document}
-\frenchspacing
-\raggedbottom
-\selectlanguage{american} % american ngerman
-%\renewcommand*{\bibname}{new name}
-%\setbibpreamble{}
-\pagenumbering{roman}
-\pagestyle{plain}
-%********************************************************************
-% Frontmatter
-%*******************************************************
-\include{FrontBackmatter/DirtyTitlepage}
-\include{FrontBackmatter/Titlepage}
-\include{FrontBackmatter/Titleback}
-\cleardoublepage\include{FrontBackmatter/Dedication}
-%\cleardoublepage\include{FrontBackmatter/Foreword}
-\cleardoublepage\include{FrontBackmatter/Abstract}
-\cleardoublepage\include{FrontBackmatter/Publications}
-\cleardoublepage\include{FrontBackmatter/Acknowledgments}
-\cleardoublepage\include{FrontBackmatter/Contents}
-%********************************************************************
-% Mainmatter
-%*******************************************************
-\cleardoublepage
-\pagestyle{scrheadings}
-\pagenumbering{arabic}
-%\setcounter{page}{90}
-% use \cleardoublepage here to avoid problems with pdfbookmark
-\cleardoublepage
-\part{Some Kind of Manual}\label{pt:manual}
-\include{Chapters/Chapter01}
-\cleardoublepage
-\ctparttext{You can put some informational part preamble text here.
-Illo principalmente su nos. Non message \emph{occidental} angloromanic
-da. Debitas effortio simplificate sia se, auxiliar summarios da que,
-se avantiate publicationes via. Pan in terra summarios, capital
-interlingua se que. Al via multo esser specimen, campo responder que
-da. Le usate medical addresses pro, europa origine sanctificate nos se.}
-\part{The Showcase}\label{pt:showcase}
-\include{Chapters/Chapter02}
-%\addtocontents{toc}{\protect\clearpage} % <--- just debug stuff, ignore
-\include{Chapters/Chapter03}
-%\include{multiToC} % <--- just debug stuff, ignore for your documents
-% ********************************************************************
-% Backmatter
-%*******************************************************
-\appendix
-%\renewcommand{\thechapter}{\alph{chapter}}
-\cleardoublepage
-\part{Appendix}
-\include{Chapters/Chapter0A}
-%********************************************************************
-% Other Stuff in the Back
-%*******************************************************
-\cleardoublepage\include{FrontBackmatter/Bibliography}
-\cleardoublepage\include{FrontBackmatter/Declaration}
-\cleardoublepage\include{FrontBackmatter/Colophon}
-% ********************************************************************
-% Game Over: Restore, Restart, or Quit?
-%*******************************************************
-\end{document}
-% ********************************************************************
+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
