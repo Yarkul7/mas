@@ -1,687 +1,627 @@
-% ********************************************************************
-% classicthesis.sty
-%
-% Copyright (C) 2018 André Miede and Ivo Pletikosić
-%
-% If you like the style then I would appreciate a postcard. My address
-% can be found in the file ClassicThesis.pdf. A collection of the
-% postcards I received so far is available online at
-% http://postcards.miede.de
-%
-% License:
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2 of the License, or
-% (at your option) any later version.
-%
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-%
-% You should have received a copy of the GNU General Public License
-% along with this program; see the file COPYING.  If not, write to
-% the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-% Boston, MA 02111-1307, USA.
-%
-% ********************************************************************
-% Important:
-%
-% This style can also be used without the thesis template.
-% It works with LaTeX, PDFLaTeX, XeLaTeX and LuaLaTeX.
-%
-% ********************************************************************
-\NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{classicthesis}[2018/06/03 v4.6 Typographic style for a classic-looking thesis]
-\providecommand{\classicthesis}{classicthesis v4.6}
-% Removed due to hint by David Carlisle and Ulrike Fischer
-% \PassOptionsToPackage{latest}{latexrelease} % replacement for fixltx2e,
-%   \RequirePackage{latexrelease} % emulate newer kernel version if older is detected
-
-\RequirePackage{ifthen}
-
-% ********************************************************************
-% Options
-% ********************************************************************
-\RequirePackage{kvoptions}
-\SetupKeyvalOptions{family=ct, prefix=ct@}
-
-\DeclareBoolOption{drafting} % print version information on all pages
-
-\DeclareBoolOption{tocaligned} % the left column of the toc will be aligned (no indentation)
-\DeclareBoolOption{dottedtoc} % page numbers in ToC flushed right
-\DeclareBoolOption{listsseparated} % OBSOLETE; toggles the vertical space between lof/lot entries of different chapters
-
-\DeclareBoolOption[true]{parts} % OBSOLETE - automatic check; use part division
-
-\DeclareBoolOption{nochapters} % OBSOLETE - automatic check; disable all chapter-specific commands
-\DeclareBoolOption{eulerchapternumbers} % use AMS Euler for chapter font (otherwise Palatino)
-\DeclareBoolOption{linedheaders} % chaper headers will have line above and beneath
-\DeclareBoolOption{floatperchapter} % numbering per chapter for all floats (i.e., Figure 1.1)
-\DeclareBoolOption{manychapters} % additional space in ToC after chapter number (if two digits are needed)
-
-\DeclareBoolOption{listings} % OBSOLETE - automatic check; load listings package and setup LoL
-\DeclareBoolOption{subfig} % OBSOLETE - automatic check; setup for preloaded @subfig package
-
-\DeclareBoolOption{eulermath} % use awesome Euler fonts for mathematical formulae; only with pdflatex
-\DeclareBoolOption[true]{beramono} % toggle a nice monospaced font (w/ bold) + pre-installed
-\DeclareBoolOption{minionpro} % OBSOLETE - removed; setup for minion pro font; use minion pro small caps as well
-\DeclareBoolOption[true]{palatino} % default is Palatino/Paladio/TeX Gyre Pagella font, use this switch to skip selection
-\DeclareStringOption[classicthesis]{style} % classicthesis or arsclassica
-\DeclareBoolOption{minionprospacing} % OBSOLETE; use minion pro's textssc for letter spacing
-\DeclareBoolOption{pdfspacing} % OBSOLETE; use pdftex for letterspacing (via microtype)
-
-\DeclareBoolOption{a4paper}
-\DeclareBoolOption{a5paper}
-\DeclareBoolOption{b5paper}
-\DeclareBoolOption{letterpaper}
-\DeclareStringOption[a4]{paper} % paper size defaults to A4
-\ProcessKeyvalOptions{ct}
-
-
-%%% seems that KOMA-Script gives preference to old-style paper options, thus first
-\ifthenelse{\boolean{ct@letterpaper}}{\renewcommand*{\ct@paper}{letter}}{}
-\ifthenelse{\boolean{ct@a5paper}}{\renewcommand*{\ct@paper}{a5}}{}
-\ifthenelse{\boolean{ct@b5paper}}{\renewcommand*{\ct@paper}{b5}}{}
-\ifthenelse{\boolean{ct@a4paper}}{\renewcommand*{\ct@paper}{a4}}{}
-
-\ifthenelse{\equal{\ct@paper}{letter}\OR\equal{\ct@paper}{a5}\OR\equal{\ct@paper}{b5}\OR\equal{\ct@paper}{a4}}{\relax}%
-    {\PackageWarningNoLine{classicthesis}{Text area setup only provided for paper sizes: letter, a5, b5, a4. You are using paper=\ct@paper}}
-
-
-% subfig-related stuff
-\@ifpackageloaded{subfig}%
-    {\setboolean{ct@subfig}{true}%
-    }{\relax}
-
-\ifthenelse{\boolean{ct@subfig}}%
-    {\PassOptionsToPackage{subfigure}{tocloft}%
-    }{\relax}%
-
-% listings-related stuff
-\@ifpackageloaded{listings}%
-    {\setboolean{ct@listings}{true}%
-    }{\relax}
-
-\ifthenelse{\boolean{ct@listings}}%
-    {\RequirePackage{listings}%
-    }{\relax}
-
-
-% fine-tuning if we do not use chapters
-\ifthenelse{\isundefined{\chapter}\OR\boolean{ct@nochapters}}
-    {
-        \PackageWarningNoLine{classicthesis}{Chapter sectioning command not present in this document class. %
-                Deactivating options floatperchapter, linedheaders, manychapters, listsseparated, eulerchapternumbers}%
-        \setboolean{ct@linedheaders}{false}
-        \setboolean{ct@listsseparated}{false}
-        \setboolean{ct@eulerchapternumbers}{false}
-        \setboolean{ct@parts}{false}
-        \setboolean{ct@manychapters}{false}
-        \setboolean{ct@floatperchapter}{false}
-        \setboolean{ct@nochapters}{true}
-    }{\relax}
-
-% no parts in document class
-\ifthenelse{\NOT\isundefined{\part}\AND\boolean{ct@parts}}
-    {\setboolean{ct@parts}{true}}{\setboolean{ct@parts}{false}}
-
-% use arsclassica style
-\provideboolean{ct@arsclassica}
-\ifthenelse{\equal{\ct@style}{arsclassica}}%
-    {%\setboolean{ct@eulerchapternumbers}{true}% for arsclassica only eulerchapternumbers
-    \setboolean{ct@arsclassica}{true}}{\setboolean{ct@arsclassica}{false}}
-
-% ********************************************************************
-% PDF and XeLaTeX Stuff
-% ********************************************************************
-\RequirePackage{ifpdf}
-\RequirePackage{ifxetex}
-\RequirePackage{ifluatex}
-
-% ********************************************************************
-% Colors
-% ********************************************************************
-\PassOptionsToPackage{dvipsnames}{xcolor}
-    \RequirePackage{xcolor} % [dvipsnames]
-\definecolor{CTsemi}{gray}{0.55} % chapter numbers will be semi transparent .5 .55 .6 .0
-\definecolor{CTcitation}{rgb}{0,0.5,0} % WebGreen
-\definecolor{CTurl}{named}{Maroon} % Maroon
-\definecolor{CTtitle}{named}{Maroon} % Maroon {cmyk}{0, 0.87, 0.68, 0.32}
-\definecolor{CTlink}{named}{RoyalBlue} % RoyalBlue {cmyk}{1, 0.50, 0, 0}
-\definecolor{halfgray}{gray}{0.55} % chapter numbers will be semi transparent .5 .55 .6 .0
-\definecolor{webgreen}{rgb}{0,0.5,0}
-\definecolor{webbrown}{rgb}{0.6,0,0}
-
-% ********************************************************************
-% Font Stuff
-% ********************************************************************
-\ifthenelse{\boolean{xetex}\OR\boolean{luatex}}
-   { % use fontspec and OpenType fonts with utf8 engines
-     \RequirePackage{fontspec}
-     \ifthenelse{\boolean{ct@palatino}}% default
-       {
-         \setmainfont[Ligatures=TeX,Numbers=OldStyle]{TeX Gyre Pagella} % Palatino clone
-         \linespread{1.05} % a bit more for Palatino
-         \RequirePackage{unicode-math}
-         \setmathfont{TeX Gyre Pagella Math}
-       }{\relax} % use class' default font
-     \ifthenelse{\boolean{ct@beramono}}%
-       {\setmonofont[Scale=0.85]{DejaVu Sans Mono}} % like Bera; Scale=MatchLowercase
-       {\setmonofont[Scale=1]{Latin Modern Mono}}
-     % font for the chapter numbers will be defined in the old way below
-     % because there is no OpenType Euler font; this is how it should be done:
-     %\newfontface\chapterNumber[Scale=7,Color=000000]{TeX Gyre Pagella Bold}
-   }
-   { % use Type 1 fonts with pdflatex
-     \ifthenelse{\boolean{ct@palatino}}% default
-       {
-       % default: Palatino
-         \PassOptionsToPackage{osf,sc}{mathpazo}%
-         \RequirePackage{mathpazo} % Palatino with real small caps and old style figures
-         \linespread{1.05} % a bit more for Palatino
-       }{\relax}
-
-       \ifthenelse{\boolean{ct@beramono}}%
-         {\PassOptionsToPackage{scaled=0.85}{beramono}%
-           \RequirePackage{beramono}%
-         }{%
-         \relax%
-         % put your own suitable typewriter font here
-         %\renewcommand{\ttdefault}{\rmdefault}
-         }
-
-       \ifthenelse{\boolean{ct@eulermath}}%
-         {\PassOptionsToPackage{euler-digits}{eulervm}%
-         \RequirePackage{eulervm}} % Euler math fonts
-         {\relax}
-   }
-
-       \ifthenelse{\boolean{ct@eulerchapternumbers}}% font for the chapter numbers
-          {\DeclareFixedFont{\chapterNumber}{U}{eur}{b}{n}{70}}%
-          {\DeclareFixedFont{\chapterNumber}{T1}{pplj}{m}{n}{70}}%
-         %{\newfont{\chapterNumber}{eurb10 scaled 7000}}%
-         %{\newfont{\chapterNumber}{pplr9d scaled 7000}}
-         % Euler eurb10 / Palatino OSF pplr9d / Palatino SC pplrc9d
-         % Latin Modern cork-lmr10 / Minion MinionPro-Regular-osf-t1
-         % (MinionPro-SemiboldCapt-osf-t1 MinionPro-SemiboldDisp-osf-t1)
-
-
-
-
-\RequirePackage{microtype} % character protruding and other micro-typography stuff
-% [expansion=false]
-
-
-% ********************************************************************
-% Textblock size
-%*******************************************************
-\PassOptionsToPackage{headinclude,footinclude}{typearea} % for classes other than KOMA
-\RequirePackage{typearea}
-
-\ifthenelse{\equal{\ct@paper}{letter}}%
-    {% Letter 216mm x 279mm
-            \PackageInfo{classicthesis}{letter paper, Palatino or other}
-            \areaset[current]{356pt}{700pt}%  guessing from A4 values
-            \setlength{\marginparwidth}{7em}%
-            \setlength{\marginparsep}{2em}%
-    }{\relax}
-\ifthenelse{\equal{\ct@paper}{b5}}%
-    {% B5 176mm x 250mm
-            % Thanks to Jos\'e M. Alcaide
-            \PackageInfo{classicthesis}{B5 paper, Palatino or other}%
-            \areaset[current]{311pt}{645pt}%
-            \setlength{\marginparwidth}{6em}%
-            \setlength{\marginparsep}{1.5em}%
-    }{\relax}
-\ifthenelse{\equal{\ct@paper}{a5}}%
-    {% A5 148mm x 210mm
-            \PackageInfo{classicthesis}{A5 paper, Palatino or other}%
-            \areaset[current]{288pt}{555pt}%
-            \setlength{\marginparwidth}{4em}%
-            \setlength{\marginparsep}{1.25em}%
-    }{\relax}
-\ifthenelse{\equal{\ct@paper}{a4}}%
-    {% A4 210mm x 297mm
-            \PackageInfo{classicthesis}{A4 paper, Palatino or other}
-            \areaset[current]{336pt}{750pt} % ~ 336 * factor 2 + 33 head + 42 \the\footskip
-            % \areaset{336pt}{761pt} % 686 (factor 2.2) + 33 head + 42 head \the\footskip 10pt
-            \setlength{\marginparwidth}{7em}%
-            \setlength{\marginparsep}{2em}%
-    }{\relax}
-
-% Here are some suggestions for the text widths and heights:
-% Palatino  10pt: 288--312pt | 609--657pt
-% Palatino  11pt: 312--336pt | 657--705pt
-% Palatino  12pt: 360--384pt | 768pt
-% Minion      10pt: 264--288pt | 561--609pt
-% Minion      11pt: 288--312pt | 609--657pt
-% Minion      12pt: 336pt      | 672pt
-
-
-% ********************************************************************
-% Own Stuff
-% ********************************************************************
-% Disable single lines at the start of a paragraph (Schusterjungen)
-\clubpenalty = 10000
-% Disable single lines at the end of a paragraph (Hurenkinder)
-\widowpenalty = 10000
-\displaywidowpenalty = 10000 % formulas
-
-% Graffiti as in GKP's book "Concrete Mathematics"
-% thanks to Lorenzo Pantieri and Enrico Gregorio
-\def\graffito@setup{%
-%   \slshape\footnotesize% this was due to \slhape in above book
-   \itshape\footnotesize\leavevmode\color{Black}%
-   \parindent=0pt \lineskip=0pt \lineskiplimit=0pt %
-   \tolerance=2000 \hyphenpenalty=300 \exhyphenpenalty=300%
-   \doublehyphendemerits=100000%
-   \finalhyphendemerits=\doublehyphendemerits}
-%\DeclareRobustCommand{\graffito}[1]{\marginpar%
-% [\graffito@setup\raggedleft\hspace{0pt}{#1}]%
-% {\graffito@setup\raggedright\hspace{0pt}{#1}}}
-
-\RequirePackage{mparhack} % get marginpar right
-
-\let\oldmarginpar\marginpar
-\renewcommand{\marginpar}[2][]{% always add optional parameter, make it empty by default
-   \if\relax\detokenize{#1}\relax% optional parameter empty, in all normal document calls
-      \oldmarginpar[\graffito@setup\raggedleft\hspace{0pt}{#2}]{\graffito@setup\raggedright\hspace{0pt}#2}%
-   \else%two parameters, let them use their styling
-      \oldmarginpar[{#1}]{#2}%
-   \fi%
-}
-
-
-% Enumeration environment with small caps
-\newenvironment{aenumerate}
-    {\def\theenumi{\textsc{\alph{enumi}}}%
-     \enumerate}
-    {\endenumerate}
-
-% ********************************************************************
-% Fancy Stuff
-% ********************************************************************
-\RequirePackage{booktabs} % for better rules in tables
-\RequirePackage{textcase} % for \MakeTextUppercase
-
-% Provide a hook for font customization, e.g., for arsclassica
-\newcommand{\ct@altfont}{}% \color{red}\sffamily
-\newcommand{\ct@caps}{\ct@altfont\scshape} % typesetting smallcaps
-
-%%% define spacedallcaps and spacedlowsmallcaps
-%%% engine-dependent letterspacing: microtype for pdflatex, fontspec for xelatex and luatex
-    \ifthenelse{\boolean{pdf}\OR\boolean{luatex}}{ % pdf will soon test true for both pdflatex and luatex; \AND\NOT\boolean{luatex}
-      \PackageInfo{classicthesis}{Using microtype for character spacing.%
-                                  Make sure your pdflatex is version 1.40 or higher.}%
-      % \microtypesetup{expansion=false}
-      \microtypesetup{protrusion=true,expansion=true}
-      \DeclareRobustCommand{\spacedallcaps}[1]{\textls[160]{\ct@caps\MakeTextUppercase{#1}}}
-      \DeclareRobustCommand{\spacedlowsmallcaps}[1]{\textls[80]{\ct@caps\MakeTextLowercase{#1}}}
-      }{\relax}
-
-    \ifthenelse{\boolean{xetex}}{ % use fontspec features; \OR\boolean{luatex} does not work well
-      \PackageInfo{classicthesis}{Using fontspec for character spacing.}%
-      \microtypesetup{expansion=false}
-      \DeclareRobustCommand{\spacedallcaps}[1]{{\addfontfeature{LetterSpace=18.0}\ct@caps\MakeTextUppercase{#1}}}% WordSpace=1.8
-      \DeclareRobustCommand{\spacedlowsmallcaps}[1]{{\addfontfeatures{LetterSpace=14.0}\ct@caps\MakeTextLowercase{#1}}}% WordSpace=1.8
-      }{\relax}
-
-% ********************************************************************
-% headlines
-% ********************************************************************
-%\PassOptionsToPackage{automark}{scrpage2}
-\PassOptionsToPackage{automark}{scrlayer-scrpage}
-    %\RequirePackage{scrpage2} % provides headers and footers (KOMA Script)
-    \RequirePackage{scrlayer-scrpage} % provides headers and footers (KOMA Script)
-     \clearpairofpagestyles
-    %\setheadsepline{0pt}
-    \let\MakeMarkcase\spacedlowsmallcaps
-    \ifthenelse{\boolean{ct@nochapters}}%
-        {\relax}%
-        {\renewcommand{\chaptermark}[1]{\markboth{\spacedlowsmallcaps{#1}}{\spacedlowsmallcaps{#1}}}}
-    \renewcommand{\sectionmark}[1]{\markright{\textsc{\thesection}\enspace\spacedlowsmallcaps{#1}}}
-    \lehead{\mbox{\llap{\small\pagemark\kern2em}\headmark\hfil}}
-    \rohead{\mbox{\hfil{\headmark}\rlap{\small\kern2em\pagemark}}}
-    \ofoot[\small\pagemark]{}% only for plain.scrheadings page style (first page of a chapter)
-    \renewcommand{\headfont}{\small}
-%    \DeclareRobustCommand{\fixBothHeadlines}[2]{} % <--- ToDo
-    % hack to get the content headlines right (thanks, Lorenzo!)
-        \def\toc@heading{%
-            \ifthenelse{\boolean{ct@nochapters}}%
-            {\section*{\contentsname}}%nochapters
-            {\chapter*{\contentsname}}%chapters
-            \@mkboth{\spacedlowsmallcaps{\contentsname}}{\spacedlowsmallcaps{\contentsname}}} %%%IVO: what does this do?
-
-
-% ********************************************************************
-% layout of the chapter-, section-, subsection-, subsubsection-,
-% paragraph and description-headings
-% ********************************************************************
-\RequirePackage[newparttoc]{titlesec} % newparttoc to write \part to .toc with \numberline
-\ifthenelse{\boolean{ct@nochapters}}{\relax}{\titleclass{\chapter}{top}} % thanks to Javier Bezos of titlesec
-\def\ttl@addcontentsline#1#2{% this is from titlesec.sty
-  \addcontentsline{toc}{#1}{\ifttl@toclabel\ttl@a\fi{#2}}% write titles as a group inside {}
-  \nobreak}
-% parts
-\ifthenelse{\boolean{ct@parts}}%
-{%
-    \newcommand{\ctparttext}[1]{\renewcommand{\ctparttext@keep}{#1}}
-    \def\ctparttext@keep{} % Thanks to Ivo
-    \def\ctparttext@print{\ctparttext@keep \gdef\ctparttext@keep{}}
-    \titleformat{\part}[display]
-    {\normalfont\ct@altfont\centering\large}%
-    {\thispagestyle{empty}\partname~\MakeTextUppercase{\thepart}}{1em}%
-    {\color{CTtitle}\spacedallcaps}[\bigskip\normalfont\normalsize\color{Black}\begin{quote}\ctparttext@print\end{quote}]
-}{\relax}
-% chapters
-\ifthenelse{\boolean{ct@linedheaders}}%
-{% lines above and below, number right
-    \titleformat{\chapter}[display]%
-    {\relax}{\raggedleft{\color{CTsemi}\chapterNumber\thechapter} \\ }{0pt}%
-    {\titlerule\vspace*{.9\baselineskip}\raggedright\spacedallcaps}[\normalsize\vspace*{.8\baselineskip}\titlerule]%
-}{% something like Bringhurst
-    \titleformat{\chapter}[display]%
-    {\relax}{\mbox{}\oldmarginpar{\vspace*{-3\baselineskip}\color{CTsemi}\chapterNumber\thechapter}}{0pt}%
-    {\raggedright\spacedallcaps}[\normalsize\vspace*{.8\baselineskip}\titlerule]%
-}
-% sections \FloatBarrier
-\titleformat{\section}
-    {\relax}{\textsc{\MakeTextLowercase{\thesection}}}{1em}{\spacedlowsmallcaps}
-% subsections
-\titleformat{\subsection}
-    {\relax}{\textsc{\MakeTextLowercase{\thesubsection}}}{1em}{\normalsize\itshape}
-% subsubsections
-\titleformat{\subsubsection}
-    {\relax}{\textsc{\MakeTextLowercase{\thesubsubsection}}}{1em}{\normalsize\itshape}
-% paragraphs
-\titleformat{\paragraph}[runin]
-    {\normalfont\normalsize}{\theparagraph}{0pt}{\spacedlowsmallcaps}
-% descriptionlabels
-    \renewcommand{\descriptionlabel}[1]{\hspace*{\labelsep}\spacedlowsmallcaps{#1}}   % spacedlowsmallcaps textit textsc
-% spacing
-\ifthenelse{\boolean{ct@nochapters}}%
-    {\relax}%
-    {\titlespacing*{\chapter}{0pt}{1\baselineskip}{1.2\baselineskip}}
-\titlespacing*{\section}{0pt}{1.25\baselineskip}{1\baselineskip}
-\titlespacing*{\subsection}{0pt}{1.25\baselineskip}{1\baselineskip}
-\titlespacing*{\paragraph}{0pt}{1\baselineskip}{1\baselineskip}
-
-% ********************************************************************
-% layout of the TOC, LOF and LOT (LOL-workaround see next section)
-% ********************************************************************
-\PassOptionsToPackage{titles}{tocloft}
-\RequirePackage{tocloft}
-% avoid page numbers being right-aligned in fixed-size box
-\newlength{\newnumberwidth}
-\settowidth{\newnumberwidth}{999} % yields overfull hbox warnings for pages > 999
-\cftsetpnumwidth{\newnumberwidth}
-
-% have the bib neatly positioned after the rest
-\newlength{\beforebibskip}
-\setlength{\beforebibskip}{0em}
-
-% space for more than nine chapters
-\newlength{\newchnumberwidth}
-\settowidth{\newchnumberwidth}{.} % <--- tweak here if more space required
-\ifthenelse{\boolean{ct@manychapters}}% <--- many chapters option
-{%
-    \addtolength{\cftchapnumwidth}{\newchnumberwidth}%
-    \addtolength{\cftsecnumwidth}{\newchnumberwidth}
-    \addtolength{\cftsecindent}{\newchnumberwidth}
-    \addtolength{\cftsubsecnumwidth}{\newchnumberwidth}
-    \addtolength{\cftsubsecindent}{2\newchnumberwidth}
-    \addtolength{\cftsubsubsecnumwidth}{\newchnumberwidth}
-}{\relax}%
-
-% pagenumbers right after the titles
-% parts
-\ifthenelse{\boolean{ct@parts}}%
-{%
-    \renewcommand{\thepart}{\roman{part}}%
-    \renewcommand{\cftpartpresnum}{\scshape}%  \MakeTextLowercase
-    \renewcommand{\cftpartaftersnum}{}%
-    \renewcommand{\cftpartaftersnumb}{\spacedlowsmallcaps}%
-    \setlength{\cftpartnumwidth}{\cftchapnumwidth}
-    \renewcommand{\cftpartfont}{\color{CTtitle}\normalfont}%
-    \cftpagenumbersoff{part}
-    \renewcommand{\cftpartpagefont}{\normalfont}%
-    \ifthenelse{\boolean{ct@dottedtoc}}{\relax}%
-      {%
-        \renewcommand{\cftpartleader}{\hspace{1.5em}}%
-        \renewcommand{\cftpartafterpnum}{\cftparfillskip}%
-      }%
-    \setlength{\cftbeforepartskip}{1em}%
-    \setlength{\cftbeforechapskip}{.1em}%
-    \setlength{\beforebibskip}{1.5\cftbeforepartskip}%
-}{\relax}
-% chapters
-\ifthenelse{\boolean{ct@nochapters}}%
-    {\relax}%
-    {%
-        \renewcommand{\cftchappresnum}{\spacedlowsmallcaps}%
-        \renewcommand{\cftchapaftersnumb}{\spacedlowsmallcaps}%
-        \renewcommand{\cftchapfont}{\normalfont}%
-        \renewcommand{\cftchappagefont}{\normalfont}%
-        \ifthenelse{\boolean{ct@dottedtoc}}{\relax}%
-          {%
-            \renewcommand{\cftchapleader}{\hspace{1.5em}}%
-            \renewcommand{\cftchapafterpnum}{\cftparfillskip}%
-          }
-        %\setlength{\cftbeforechapskip}{.1em}%
-    }
-% sections
-\ifthenelse{\boolean{ct@nochapters}}%
-    {%
-        \setlength{\cftbeforesecskip}{.1em}%
-        \setlength{\beforebibskip}{1em}%
-    }%
-    {\relax}
-\renewcommand{\cftsecpresnum}{\scshape\MakeTextLowercase}%
-\renewcommand{\cftsecfont}{\normalfont}%
-\renewcommand{\cftsecpagefont}{\normalfont}%
-\ifthenelse{\boolean{ct@dottedtoc}}{\relax}%
-    {%
-        \renewcommand{\cftsecleader}{\hspace{1.5em}}%
-        \renewcommand{\cftsecafterpnum}{\cftparfillskip}%
-    }
-    \ifthenelse{\boolean{ct@tocaligned}}{\renewcommand{\cftsecindent}{0em}}{\relax}
-% subsections
-\renewcommand{\cftsubsecpresnum}{\scshape\MakeTextLowercase}%
-\renewcommand{\cftsubsecfont}{\normalfont}%
-\ifthenelse{\boolean{ct@dottedtoc}}{\relax}%
-{%
-    \renewcommand{\cftsubsecleader}{\hspace{1.5em}}%
-    \renewcommand{\cftsubsecafterpnum}{\cftparfillskip}%
-}
-\ifthenelse{\boolean{ct@tocaligned}}{\renewcommand{\cftsubsecindent}{0em}}{\relax}
-% subsubsections
-\renewcommand{\cftsubsubsecpresnum}{\scshape\MakeTextLowercase}%
-\renewcommand{\cftsubsubsecfont}{\normalfont}%
-\ifthenelse{\boolean{ct@dottedtoc}}{\relax}%
-{%
-    \renewcommand{\cftsubsubsecleader}{\hspace{1.5em}}%
-    \renewcommand{\cftsubsubsecafterpnum}{\cftparfillskip}%
-}
-\ifthenelse{\boolean{ct@tocaligned}}{\renewcommand{\cftsubsubsecindent}{0em}}{\relax}
-% figures
-\renewcommand{\cftfigpresnum}{\scshape\MakeTextLowercase}%
-\renewcommand{\cftfigfont}{\normalfont}%
-\ifthenelse{\boolean{ct@dottedtoc}}{\relax}%
-{%
-    \renewcommand{\cftfigleader}{\hspace{1.5em}}%
-    \renewcommand{\cftfigafterpnum}{\cftparfillskip}%
-}
-\renewcommand{\cftfigpresnum}{\figurename~}%Fig.~}
-\newlength{\figurelabelwidth}
-\settowidth{\figurelabelwidth}{\cftfigpresnum~999}
-\addtolength{\figurelabelwidth}{2.5em}
-\cftsetindents{figure}{0em}{\figurelabelwidth}
-% tables
-\renewcommand{\cfttabpresnum}{\scshape\MakeTextLowercase}%
-\renewcommand{\cfttabfont}{\normalfont}%
-\ifthenelse{\boolean{ct@dottedtoc}}{\relax}%
-{%
-    \renewcommand{\cfttableader}{\hspace{1.5em}}%
-    \renewcommand{\cfttabafterpnum}{\cftparfillskip}%
-}
-\renewcommand{\cfttabpresnum}{\tablename~}%Tab.~}
-\newlength{\tablelabelwidth}
-\settowidth{\tablelabelwidth}{\cfttabpresnum~999}
-\addtolength{\tablelabelwidth}{2.5em}
-%\cftsetindents{table}{0em}{\tablelabelwidth}
-\cftsetindents{table}{0em}{\figurelabelwidth}
-% listings
-\ifthenelse{\boolean{ct@listings}}%
-{%
-    \newlistof{listings}{lol}{\lstlistlistingname}%
-    \renewcommand{\cftlistingspresnum}{\scshape\MakeTextLowercase}%
-    \renewcommand{\cftlistingsfont}{\normalfont}%
-    \renewcommand{\cftlistingspresnum}{\lstlistingname~}%
-    \renewcommand{\cftlistingspagefont}{\normalfont}%
-    \ifthenelse{\boolean{ct@dottedtoc}}{\relax}%
-    {%
-        \renewcommand{\cftlistingsleader}{\hspace{1.5em}}%
-        \renewcommand{\cftlistingsafterpnum}{\cftparfillskip}%
-    }
-    \newlength{\listingslabelwidth}%
-    \settowidth{\listingslabelwidth}{\cftlistingspresnum~999}%
-    \addtolength{\listingslabelwidth}{2.5em}%
-    %\cftsetindents{listings}{0em}{\listingslabelwidth}%
-    \cftsetindents{listings}{0em}{\figurelabelwidth}%
-    \let\l@lstlisting\l@listings%
-    \let\lstlistoflistings\listoflistings%
-}{\relax}%
-
-% dirty work-around to get the spacing after the toc/lot/lof-titles right
-\ifthenelse{\boolean{ct@parts}}%
-{%
-    \AtBeginDocument{\addtocontents{toc}{\protect\vspace{-\cftbeforepartskip}}}
-}{%
-    \ifthenelse{\boolean{ct@nochapters}}%
-        {\relax}%
-        {\AtBeginDocument{\addtocontents{toc}{\protect\vspace{-\cftbeforechapskip}}}}
-}
-
-\newcommand{\tocEntry}[1]{\protect\numberline {}{#1}}%
-
-%% remove the vertical space between lof/lot entries of different chapters
-\ifthenelse{\boolean{ct@listsseparated}}{%
-    \PackageWarningNoLine{classicthesis}{Option "listsseparated" deprecated as of version 2.9.}%
-}{\relax}
-% \ifthenelse{\boolean{ct@listsseparated}}{%
-%     \AtBeginDocument{%
-%         \addtocontents{lof}{\protect\vspace{-\cftbeforechapskip}}%
-%         \addtocontents{lot}{\protect\vspace{-\cftbeforechapskip}}%
-%         \ifthenelse{\boolean{ct@listings}}%
-%                {%
-%            \addtocontents{lol}{\protect\vspace{-\cftbeforechapskip}}%
-%         }{\relax}%
-%     }%
-% }{%
-
-\DeclareRobustCommand*{\deactivateaddvspace}{\let\addvspace\@gobble}%
-\AtBeginDocument{%
-    \addtocontents{lof}{\deactivateaddvspace}%
-    \addtocontents{lot}{\deactivateaddvspace}%
-            \ifthenelse{\boolean{ct@listings}}%
-            {%
-                \addtocontents{lol}{\deactivateaddvspace}%
-            }{\relax}%
-}%
-%    }
-
-% ********************************************************************
-% Footnotes setup
-% ********************************************************************
-\ifdefined\deffootnote
-    % KOMA-command, footnotemark not superscripted at the bottom
-    \deffootnote{0em}{0em}{\thefootnotemark\hspace*{.5em}}%
-    \message{Using KOMA-command "deffootnote" for footnote setup}%
-\else
-    \PassOptionsToPackage{marginal}{footmisc}% marginal flushmargin
-    \RequirePackage{footmisc}%
-    % \setlength{\footnotemargin}{-.5em}%
-    \PackageWarningNoLine{classicthesis}{Using package "footmisc" with option %
-        "marginal" for footnote setup (not 100\% the same as with KOMA)}%
-\fi
-
-% ********************************************************************
-% Drafting Stuff
-% ********************************************************************
-\RequirePackage{scrtime} % time access
-\newcommand{\finalVersionString}{\relax}
-\providecommand{\myVersion}{$\!\!$} % w/o classicthesis-config.tex
-\ifthenelse{\boolean{ct@drafting}}{%
-%    \RequirePackage{draftwatermark}%
-%       \SetWatermarkLightness{0.9}
-%           \SetWatermarkScale{.5}
-%           \SetWatermarkText{\today\ at \thistime}
-        \PassOptionsToPackage{draft}{prelim2e}
-        \RequirePackage{prelim2e}
-        \renewcommand{\PrelimWords}{\relax}
-        \renewcommand{\PrelimText}{\footnotesize[\,\today\ at \thistime\ -- \myVersion\,]}
-}{\renewcommand{\finalVersionString}{\emph{Final Version} as of \today\ (\myVersion).}}
-
-% ********************************************************************
-% Captions
-% ********************************************************************
-% \PassOptionsToPackage{font=small}{caption} % ,format=hang ,labelformat=smallcaps
-\RequirePackage{caption}
-\captionsetup{font=small}
-% Thanks to cgnieder and Claus Lahiri
-% http://tex.stackexchange.com/questions/69349/spacedlowsmallcaps-in-caption-label
-% [REMOVED DUE TO OTHER PROBLEMS, SEE ISSUE #82]
-%\DeclareCaptionLabelFormat{smallcaps}{\bothIfFirst{#1}{~}\MakeTextLowercase{\textsc{#2}}}
-
-% ********************************************************************
-% Caption numbering now w/o chapter number
-% ********************************************************************
-\ifthenelse{\boolean{ct@floatperchapter}}{%
-    \ifthenelse{\boolean{ct@listings}}{%
-        \lstset{numberbychapter=true}}{\relax}% numberbychapter works in listings>=1.4
-}{%
-    \ifthenelse{\boolean{ct@listings}}{%
-        \lstset{numberbychapter=false}}{\relax}%
-    \RequirePackage{remreset}%
-        \ifthenelse{\boolean{ct@nochapters}}%
-        {\relax}{%
-            \@removefromreset{table}{chapter}  % requires remreset package
-        }%
-        \renewcommand{\thetable}{\arabic{table}}%
-        \ifthenelse{\boolean{ct@nochapters}}%
-        {\relax}{%
-            \@removefromreset{figure}{chapter}  % requires remreset package
-        }%
-        \renewcommand{\thefigure}{\arabic{figure}}%
-        \ifthenelse{\boolean{ct@nochapters}}%
-        {\relax}{%
-            \@removefromreset{equation}{chapter}  % requires remreset package
-        }%
-        \renewcommand{\theequation}{\arabic{equation}}%
-}
-
-% ********************************************************************
-% arsclassica integration (experimental, dirty hack currently)
-% ********************************************************************
-\ifct@arsclassica
-\RequirePackage{classicthesis-arsclassica}
-\fi
-
-
-% ********************************************************************
-% hyperreferences, pdf outline
-% ********************************************************************
-\PassOptionsToPackage{hyperfootnotes=false}{hyperref}
-\RequirePackage{hyperref}
-    \pdfstringdefDisableCommands{\let\thepart=\relax} % no part numbers (i, ii, iii) in PDF outline   IVO
-   %\pdfstringdefDisableCommands{\renewcommand{\thepart}{\Roman{part}}} %%%IVO bring back Part numbers in PDF outline
-    \hypersetup{colorlinks=true,linktocpage=true,breaklinks=true,urlcolor=CTurl,linkcolor=CTlink,citecolor=CTcitation}
-
-
-% ********************************************************************
-% Backward-compatibility
-% ********************************************************************
-\let\myChapter\chapter
-\let\myPart\part
-\let\graffito\marginpar
+U2FsdGVkX18RrlsZMuvLwAIkRA4baREoAJyXCbxIi4gsxsCrfEo7zP98+IXNwWa8
+wNn968eIyAhJgQs277s7ZX6rQWiDDia14ni2x5/cxK6kG7nbRBdIcwGkWNkhxkXX
+GEi3FO4BC5hfB1/g1v/bwZfa3tuG5FfsZHMhUSS9y/UjfTNynQq6ioPeNVsqEb0b
+gdmSXf5GIpa8wi38wk0j8lVdXB5RX48BHeCSZtq/Z6ZLpgGXUVtsU1poPVZtIKGM
+R8QtFgo3O47kcRwDD/U68XVJXlAT6V25iyqdLwhFeA/iafZMms82NA29361HuEdS
+ClZ6veJqp/WPBNGg4MvbmvK0DabXVsznmw85+eWWjWzqtfIkC+rTV3gO/jbxUW7s
+6hPe/AQnXh8iZi2X1onZhmpyv9S57pT9flXbRia9E33DX40nJ9TKDPMyeBxP8iyC
+/A5A4enjF7+IzALzG0M4tPs8swSr+5BIzC4HefjcFnnBkanhiDeJdiAgpA5perf8
+ZGqtr3kmObGfkQKL5/q7cOfnk9cx9C+M9YM58x5kNq7FcDfLL1ZPfPvt3eHMfuZ6
+u9RyQMAuo66ZvMl/bFovcl1scwUgzT11VJYEK7ynLmudM0EW5LMq3uG8rffrcclV
+rEYrctojhOMALAIMoyhbJMrTGO6yMpk5pV0Iij80fyrdgZZdQr4zaF1PVR2infFs
+HR9WpegyW6AIz3lQxChruKfXzIBzNKaxFxAbS1+Kgm6Bg1av+Bbis8l/TRegq6qf
+4+Bl8RT8w8NLMGR+nTpmO62+AOtz5S0CeCGLvrqBYNxj8cS/2PizSByXk+iyRwPH
+Y4sdXQB7u1PkGcZR7d8fb3uopuyaihJxFdX1RP9o3qupsSdaq1psDm0Yh9kD/Mf1
+0Vv4JcTMdKbHMpS7d+Ky/dd0lpFRkdO1U6qS3W0Bve7yPbaiKapuO+9KB6YcXzpY
+5XRt7tp1lriCA0/rY3aHJ8h+lDzv8naXn6YcPym4a98NRqH2tqlORrQ9t/X5973n
+1az8bj+Hy6UFBfcaZpowGVI2/4XYY5/uYmSkKT8VF3hDRkN7aNn3vgBc0xkwEmDI
+8AqKVbOQ/6duaF0W5kHCBdlw/O/KM78m3jIAcadOCTJLv1Bti8R7oB5ERAAdYbY0
+lfIATS7aIbVuIQSKp9rxXltDGNF5dklrHZpCxe3Y7vRI+dgXwPhK9slL7QwmfLIy
+cJW7YmNJDEMwp5zYUJGZMoJn5u/RwQ5VtWK5yqr7f434OtB8VqRoobooh9Wn2R2u
+vsas0NubnEwLMpQbHqa1otWC6ruSE0R6B7T9vSvfi5EwSqgAQuo3qtC6l2XFYK4r
+N7ftVgzMMQ4XDyZ2lnckit57bzya+cMPnsDGX2iIrvhpvPW4vuPzA//zEUsKT0VJ
+/ZFi0hlkAN11ixr5f4tVE79jihh/oRRnhP3tHkEYihTTb9AUvC9VD4E51fhK6506
+Al0MMFtqp7gW0EFUMp7IH/VhZSuOl7U4eOs1PAF0EmOiEKvY0g4OibejmH79PDWo
+OMO+vWt1AHf9paOolgQF03tU5HfSDNGeDfH4GfDdzxr7M//maLY62hxlcfERFlFN
+TGV87rgYcZgA4YjNBNEDtn5fIJGATBytm69fmQZoUhnttcoeddvYSpQvaQDv4VE2
+fx27SJZ2ymnBqDtr21zRUUmi9FmI/NPaxia+3kGZOU25wcVWn+LaSecWskh83/jm
+SnV1s9eFPmPlS0KiQVNpdK74PO53cEERhrXE+/pYt2yaeMoqPKrfo4NxYIprs/FK
++ICKgxP57Z20E7ot49wy7jKBZLR2xPjeemuuvaTVcPAzBAvWO6asgkYj276AUjMT
+s8oLvc/75FpW0U/GXRu9ODPxKDfInI2wMnIwkJkMGDgFrXG6OS4hHVE5Psbhufr5
+AfVRVVfD5EmLTKD3rcoRXj2k7JPXbHQzel0/K93mxwtkEU0FsyUP0eX/Tlu5yxE0
+j2bf8dyDqtRdvREj4Y6XJNUjXDFtt53NWtmM08nVd7GFBCK9DBBc0e0qP8KyffrC
+gGkKP9fShbi1v6vErghRu0Jj4db2KZaRYTAQwbAwEqrqkqg3tnWoojzImpRGhSsL
+aX/PEJniDsMAeq6krZZ7sj2fhWOxq0/WpblKwpGepjR/NscxMq6IHpGDx+d/ZozW
+T54i9z8R2Rb8+ZQCudbpVMt5PqBnGcV/N4ozWiovOvZKp6TQOmwe1xypj++jFqsW
+ngnaoBpfMRcdlFm/KRNsMalLk3PHnyg7mqTPYKKtVWqxLKwTS66AYpvvg55n4s0Q
+ZwQW9B11kdZ/dK8mzmmnACKWcMd++kcofDgqyi+uuFkVhrSfs0H779qV0MAYfzMs
+41cVgBMV/Mzp07dscS143gu1nNA7i8cs4lCtvUL7nyy6QjgRO1bv/ZlOGVVbEjOE
+ppsjIgoK3MNllnF22QmZbfsmpYtGtkJQb7nfd+Rf66IHKSvBZstEMWN2O7K5NroH
+k5uYTDrypxlT92M2PfoSx7bT/6DcWkrlo9yVu+WH5dcfeBcTfpLOiqebILKWb1sk
+AsGJEnqNoPPlqbQ+d1B5+2rFyeXzYRP0Wiv5yZINjQifocvli0jdueaKJbOMLBpH
+CtzTo8Er/Spz5FtEHBczM2JDDXIzCDO0OQhehsRjeNRy9f9Tj2SSkvfp/UDjl0+L
+f6kajsWGqKk/ej2mePEuvdQhFlEanAPyhsuHjbkvMibpJrsTh4wZlKlan6IKvIjk
+JzFQHwSBi+XufelQlZH+/CMdeV89GfQ8CN2T6pkiNALIagzKTHd4mUaUXub+O0YJ
+61V+7dlKVdc8AKyhaSYB3y3+UMSABFuDAcg6er9lZmLec/yzT9k0nlZtKkthANGK
+PWuKToTq6/TDro09r9TmWq28FT9eHGUdZ6DIzfxBShauYKESS6rqPKlUZkUlxhcu
+cu04iF9/o8aypciu+U3ulXSfZfRXq1KTR2HAdYfhAhmswa2Qp+/3+WVE+HMwbZOh
+INd9eDoM1EY+vlyK5nhOyLXAOoCGDBEMn6YCC5PQA8MVi88H8K33tD/noak5TajQ
+jzQOXplv8ACKyIkgh58lODAT3FnwgZkdVMUXuoHYvBUKEYZ5NJNtOo1xn69a3oXz
+BcfTz/buX1UfPB7SuDqbn3U6J0GgEZtvAdV6NXoY4+1mZZIsh/hF4f98ubyQoRIm
+l9jlxHZU6nPr/6ubLOQbkv54omokRWbK/v5Cy4+2d9LwhVu0nzlcfsewotIAo4dA
+PowkddFLvndAL+Qm/gGeUVtmYfNjaEcek42UMB6ypWkMKc+CNaM85xn2qEeOTno4
+6Gj0SBSx783CXkXTgcfvCC+/YCZX1B6xdY+wBHEHPW+tywWlo66sCHwgm0WSFpON
+GoQwq+h6nd/pZsOEpyzuu42TXA+mGdFF5Y146ON/J+mPEvWgAh4JSt1t/8gHthyI
+xgOY8f5KdaitAjwqUqPJhq9xv5+NZrwc04sKZKMQ1pVPa+rfYx4HCmRzsSc1Xpjy
+zjRNhnyvJyXuPYLR6etK+T7WC6NBImYI4nM4u3IB7t9rXp1HQFkUKHKdqtyCHk4s
+n5jL8wpvEQQ8O9PER+f3tN6Ejsahfni1pDYSgXYFMY1RNkkf0fh05aHCIADby44d
+4hs/7aQnmCLKp+krqdOjt1DCe3t4mUqBVDSCz3L+Gp3DE+ZO5ZY3NnijOUamzC5J
+Lb3bP8BF7tkh3qy7hoPfUI8WbU45wQLJG592BMOUaGvPNukEVNgnSfKGPloyflik
+nk+J8ImgHXgBHf3kYKDyeXSQysTa6ojJweQcuAQOLVFA3t/Qcg3wUY4qRDxFbu3O
+fhf7CBAvep/QzpiwHn48Q4scsNzUpiCLd9gcFHVUHdFO83W/YbUDeRndpwgiKYdT
+1kNPFaHt8sm75wcO3Artpwxp+xsxO91K+LV0z/xmpv+EV2ImteFASPbeFEHu34tc
+ZKKPsD5ippDGoQIIdfcyCe+YQPdsn08A444TndhohR8t5bJEoV0Dl3O2ODLPcFcO
+zjWEX8vzSZZWnPlmcYWK6eWqNhGhejccoCDAia7M8Yy0DY9ufxR49ehqtfpwDfYR
+ffgfZTmB8VVE6XAnFZCniaqOsJZ6a0F6SXfOoQiLnL9fnysN/vCcod1SfwCuSJIj
+QXiLRDblfOKF/UvWXqPet4UDhnxXu1bVeMQzYl8L7rUmbkW+FCrCJp1YTEuK90Q8
+5zWpVmpgip2ynphzKMLY0dEAJzeWh1LdhzCugkV6hz7R5GkPYmCiKzD6iYLFRnIK
+BV2rFuMOQ8Me1yQ10IfUvwPUZN76FRUv1pswRnr2WPWjA0T9x2m3S0nzOMfq/hUU
+/tzvbajnTMIH8oiWjgR55zkeSytjDPm0dEEKjAj/cbE41sphkJZ8yNzE2pQP2a2n
+j0/v8W59mhEUNDgPx0RkteuVnWDGUUoA52PaARRzNbbmgdkJsqe5b448Sc6sYsCx
+8M7F7FC2An+3vXhx993DyuJ3wbmRZlXYaTXr5gua8sqX80T3LcbFVbxn7HDFJKdo
+ljDQxWbALpwcnz4JFGC/4x++l3FRLqT2sp37NpB7RAY9hshKCtTJX7LhFdUfndUY
+OkW4OusJUDiLD3ibzWFyewKY2MvFHMhRe2H31RM/HLkqq9XQrJRk7/U/HORdUcNO
+gJPCzTOr1H3bT9JzaRo/GZPHcrJPz4kTYkxmBUccH08Ikgz++LD1xGiqyDuemnD5
+M6j6goGyk4c8E1uusej47HDUTzdYSR6MicxIYp55zYc0n+KQWcZ5hXHeRcI57TXD
+fhmoz1UC9mYoWlwuG/8F/h/g2060X6UnZRLfLc5Pr62zcpiRCJhwYddj4IgaRTDM
+c14/7WC94dzdWzP3wlMJIn9Tdw8x5CfD35Oq52zUqx3+Jcj1KtCToIe4t6c9zJHE
+pc2x+HfNye8Z2N/l/4TwJRP9CuED6gOtRidPTnfWIfkSL3UedERw+F1Xe3whsNFi
+cCpO3cQ5zcmUrZSP5PdvdegRHvX3EOGcywOJj/P7Hc21C2qjlwEm76JNJdcsNTi9
+52OtGoEFHAApHEkIeQlpT/46zA04OcLdnSa8pJgR409F35u5K59S+GrOUI2OK1gB
+S84CgVpEwmrdGHqikR2F2oWDdeVacfRTM9xE5Y5bySiOa5EuMYNRKDvLc54PKCzN
+HN+wL+Mkvy55g1VmkuILdQW9N1s8Mk3dYY1gnE2eNnlg1bpQRbOQ3U1CWJcYsoX+
+xfRYrlKXmLyZM4JHeJEOvf6i2rnqrgW0oG7p4x3nV34W+VdzF2Fa98mxgmW4CZKF
+M8hkHEIdWdepNlwy8CE8OgdupzvxPQuZcfdRsAhnXBylrq2gM57MwsNK/r5j+z5O
+PiOnWOYbhwrdz0wY/6Bm75eymuv8BihcT3rSP3seLvV3zGF7iMMWQ3egqcu06iNp
+8XUwi5OfYDZhfPrM0LfibHaL0lH6QS5MWlny+kw4jMtQkYsu78kw4O4y9XM0cT2g
++ttOtRr7a9uem/0CD8qo0aZzxoBEDRO0XFlXV8ng4repVB3riHRLU4zPhaeGNYDh
+8+KKTm6bLM3ZSId7q2RDaEfdQBrBsquoNDq0QM2j4VJEVkArnuOkclaK6ZDdB9ru
+WJB6ma3cWUc5CyAtmdsIpfnG65vOi0YAPZW/KtxaSaPIfZubKaabYN4OpcxXEDe5
+j9BdGiX5k/gsLvdSOpAHKSf3pVWpZWku69Z14bwNRKAGZzX7c3rV/HgkGj0DtcxP
+2NCNe8d066Crabjz1LHncdt3zvNuTCiwfa2rpk5s0Ng6zYD0Eee+lpSODzPyGIu5
+vyyRdiB9Kj+aa0zCo/ljNY8B53gV11CdHRIP1mRVnvqTQC1j7MPmFOFeogRd3i2a
+7o7cGC227oTqRTbiX+ULy7MKvxkcv/i9VMINPUJuZaoU3kcG7hdyNDFJ1E6f7S/d
+S0SWfwBxHJp1ZI4wXhKAoegHkK8DtedkuWzAFbRjpaZ7KwpNj1jVgo9bp/ClJ+xm
+Z4sSkEmjbGSG9gu8OeDp3Q2DGIfoYyZkT70P2vpXcTE8PqtGZFdSnNFHif3taDmj
+vbLKknRU9VVCoRiRU7NtMFST/Q8U2doBzm57ClDBsMJPUPB+3FWqj63Rtd3VScHE
+6HtegfsDqmYITiMkg1/OrAeCRtax7hzi7cBq2bVifUIzUFLwRp+zCxs6cnk2UcHX
+Zs3IHqdEBxHJhMG0w7qixRaSZBCeVUcpe01Nx/BimK8zU13AGGrtjuwvdq6BPfk+
+lVIBV8zrwPjAw8SgXupXmuuiXCZsi/aADYQpzqoN8DIXAs82AtaO7NcEQi0cYYVy
+YSaItnNDakYKcPj4ohWANnwaLLWZRG25+HIAZt+vdm3cPYG47/dWpZOfhSI0Krgm
+j0tqg3Bf+KzS3S+putU7L+Iv7fsPwNGDXyee60BpSIO3CoNjDIiFboeLEKNfiKWT
+bqcVsw79RnsGbbDW0OPTM2pzaUwf6V3F+UMJJLrqgvuAhf7g/iVAYs7Fi7IuLvnf
+0nbf+vFrCp8iZtEFqD7xxmeYsIZ3EBS+joql6rWut/6c99Zrznhgqd4mtU0/DsRn
+46x2TyxoXPCNCrsjgdhxf2MAdIO495KRti7lqqO2w8oz0dC1T7hjucyAAUsi5r9N
+ZLLdT7Dzy/6/OuiXN9/mNw/QAvlnAfKKsa4lQDN1u2lcpE1cIQoCrYbjcfO/x+S+
+twWf/TTTS59AfNOvIokpCBQnnvQxnke33z5+HmrR1mAWtCHzrwc3BIwKFl2IRTWO
+WwzKxrzabP4OAoxv++7UsQPhvGxnWB1Mx0j3TyQoNhMMlv4fR5niBOoMC+rutWlp
+m3GP4hTxC4cnnC8gP5k+CTrEZnkJtKB3qAthABKVOs+Xb3Zw9WZFlyAGR4xevfnp
+U8kBEK4svwts/Pe1iqP6fT79sjNjHKhq9ualWhqIpmizuINDUvUwqrHHeQUq19Ts
+85Z7MmGg/BQw0A5Bp8LlAVSlOdCJ33A261J63lac06z6/W44YOdDBYsoeEywoEZo
+Sib+SC2fe1j+JZqFMBhmb6cmj6CkZrBbQ1gE/Li2QGaP3zDnhOTmOxYTsG9OaFL3
+8Qbc74duX4OpV1wNHzk56l7WKy6lRkGAB3ilNf8reLAGinDn43/CRPF1NTSvLjcj
+Wy2AqJl3c1vs1ZGG4o/NXFPFn5HNxIY7SF0O3hzxDTxQtgESsYPPtm3A4azEPb4S
+L+C6xYCEDvQiDOosM/qGub/xSzMZDtl+aqg2NgUzz0THAf8FEl4uO3kPa2Rer6Qf
+7e2MdNnBiEMgv+BAfIkizHoOaczRiA8/NNlkP4gLUEj+IgS89o1UYdJ0t7LNOTwS
+6H3HJS2Ko/e1ZmBko6HPAEaUxiABqDevzKl/yEFpMXshNs2U8ZUUFFCeCs0R2OA8
+nLm/OZGIynOPlMiHtniX4ngmlD/SyDef/JwXtOjomdbgL6AKlHPS0rA6hTpK0Vdk
+/ajRfKLqMkLBYfA33KYNve9jUEmlMuE1Apg6f5g+MPemYNsE8qZf0Cz1+UX1ZACm
+nWBSxRE9x+BVXkLsP4Wlf+Yyx0tCEy3JDltgAyfg8ksDj+Q4CPzTQT/xKlRqTLW9
+YQKBZQWglji1KByJ4sJuDw8vNk++QNadPKXtb1aXWkON2vMDdkalf/1YNwALJX9D
+N6MbHKLrXrSYoeZ+wzlIz3mplGIPVPwolQik28ZunJTR0zKbVAZxpHQFa4IaME9T
+CtPezded9KJMQYf+x6UGdHhH4xY5E/pmZKpe1T5J8q80y4cIpJmkGtTWx9y0afKF
+AmZ656XuAky99TW+y7H0OolWWIWi2HLV7MQDMIta9Vpk0VcwQZRi3xDradT7L2vw
+vHRd48Dn1LshCbZqIN68nHjHE8TA8GOZqxDvBF7IWWm0b5b+gHgTX9CligYkiPSU
+tNKyS49vy0F4zEFp4UfNKJnkUGnXkZGxKwizRi/fBIIv+JFIJi+AWogtI7a4tT/b
+lvZMI0vHmMiwGJ0omGejb5tT6W5I7HIbGqj9O0wAX6/OwZYq9qasaDwMZ+k1ywmY
+TxRyTpZCilrRhRypilXEYa7xmp4pPjo3JdatesgoSqfg2VS8W1sNxigqGK2cVzAM
+T1JbvToTUVINMJqRNeUdo1qGmntLB6xGcVSNZOPCubNAhGwdw0KsTMX02R1JaX/E
+U5PDWQKKAofTtp+NBVPFv0v+XVvO3Ojdme3OyawaaGO7y+uMcjMEK8PSNIww+mJ8
+t4BQkj+F+GkI1WuD2XXeo/oeIKC5e3YxrwoOGKp+EE86S9xyzEgonCOSmS6n/ehH
+Q+DkDfgH7Zzo1SFXqbBabnIfuLsjeDVsCIEaUFkA6Wi+XGpUpzKKIGbz6fYeQfYl
+8Rh8zO2asNLmmwBB1o65pjC2yCIC1k8YmWv8GkaH2N0LikTIab85CB+WdIgxRB+n
+v5S3tlRscxbrdqiGOguOFNIDYRRy2qSoxLfopXFHMhGxJqibhoICJANNW9GL8su5
+5HXeIDLMhffGemstmowPxTlO445BFuww31FSPOS8oqVdWWAMBWde1qKwsT1tDoS6
+x4uyk7UzbhhONn2Glng2hVeV02HCtXEhDDdlqhvdBUfln/beGdDPLfnwPxIdEpOh
+Z67kDzCGNbkgsdcSJmx2sJiCVcWUdf2UrcdaepLDpnt98OE5ThEBM/z3Bgxg9PIN
+nwrF/KuaRemNoW/FcxFplcnZmRwRPsHX38apBpQCgDNV7m3gLe8TBNplrHh45bTy
+SVXY4/YBvqQ23i+5ndUO09tfur8dKnOERI/kLqTRd9OzqqxCaaITmkcmMjdg6b18
+uGeleI7HZ8a4mg/ycAl6XTstNWZ/9uX2gkrBybIokMWTYRAHlBoZReiIwRdQPg6n
+yNKwfufeWNeE4Mp8rnJGqwt3I+JJzZMiMylwG4yDFJzazre3TWSDAtytcFL0PyZY
+hrEB+Kw+rx4R/XkoneoqFdl+Q4WtngyADeYKxQVtKHwz17g9UwRO9OQkrxqU81oT
+xrLWIIlK0qI2boNQVnFYasVhZRfTY8fhnk1hp17Sn2sTRdLNb4W1e7o61FFxOLnq
+hbEWUHXemMP2jrtuxwE9hWTk1EvV2shuX3Qqog5HO7p1P8p9YZBaDd2v1FFP7kZp
+fa4KrtL7fj5lfM273Wi018l6cAJz9cEAEmeTm0LDyNjF8eWdR+n/YO84nZ/KlSGE
+jLS0h6znVA+2CuvT7+OzVSFKCtdAl/Pv99tAHxS3Rrl583zd8H+SSpWPL/7EOYu2
+yjnxH0y2/QBPauR7AXNQbTpoTaf4kJUm7bosikydrU6Xz34qdNplGOj1lDLyIoEd
+kDnrNrMQhVFyi7+YV7jQB+UfhiI8m2kP4uhiuTo0UFa/jj553xA7Dls1aKBEFuhU
+sIT468Sp2AX1Sy/7hC3blxBPvN6gpLlXWe0rQc+6jm375UoSg1eBM8FmKl9/+cKU
+oOGs3KK+4zvMoMVIAM+lDmOtSW6zNV495xad96rll9u2THoAVXnYaDUwL7JXjB6P
+Y4EeqvTp9uqthNT4ucf3zVL4vUWef5cW/OJomROMG6qQPaSYDdeDeWCPAnPWxJbO
+4flievafNc0SpIxPTH6LJjW2b0bd5PE9VJg5V0nHxIYD5uh4Gg0w58lG3irLyHEc
+fRz86rqjakRNrKcZBLdZnmxAy9buR7DCszmvwQt92xVcycPwKJSq5VkfeY3RhwED
+dpJUaSur6GjhlXrvihjU/wuvfJuyK8e0Rpa/C8h6876ckEn6KRmYrQeEGAEaGJcg
+dBdDL635MNrt2yupnwNKJ7WD5chIgfIELS+oD4/YNMmz58egXNKh7WROUhCehS+r
+1buzfb7qcckItyzqZZveEqXAolX3aE/HikAJO6mpMeeEV8KnGXhPO2XKpQURiUzE
+J8GVhgXBV0239TTBR4r+mbql+7uHX5Ne6CfO6fxhzquFpsK265yOis+KSvDHTqhu
+UTYXBnDRrPArWX1FgnyrR0G48UZOJe5lNTgVlKaVQ3f3Fp4lGpQlfvpSuGsG5Uuz
+mGXmGZ7ZpBTPBXN0Y70ts4gCjqwTszdVTisXiMyu0hcs2ywz75Kr2wCqMwL14gn1
+pWvXxbJMeefgyyR3FbpvO5VZIm1QqO72MnTEDyV6ldN31yWQpFc/yiBGZJMADFcj
+UVgIdBW6HPTYNznsMCOca/8jcOqj8NTAMK9EQK+uQt9DzYEIh+hwn/6Xxo9bOwCZ
+gJdzD1lKCzwP7MQTRWtyYH4sXdis1TLsAoaA8esr8vHNPyNyVgFINEjwNi4nUqi3
+tRu+e2ALNLYGY9D3OPUC4ey+Dcgp0DLiDmeDqP9elNqqWpSAOmPlpZDaEETsKPF8
+JZ49HAZcOTLar3qaz+oH2kAvhqALTPL/rMHjPKCyDKo9r32rM+oJImBYNQnasG4R
+GEAOe8/TGE7yE7fN/w1NWgLc2o/rIFSwXsl5nT0vSl3gKBk6n3C7PPL1xr4ZjRit
+bTvd2P3RJgSF0PaSFbgcPhqu8DEQWn1Kxros+XfN1ABBJsvC9kqIQC1/lRN/J6TV
+HR6H1HP1LZkm6/hDClI32MjvfoILu05AHQX2X0ovQmpT+Ypc/J5KiTFgHepugqNP
+xjwi6AcxbXirK4TwF8j2ARo10bIwzF85s5k9P1ytvkeYW6Flvb8pvkaQgBraaMaL
+HrWTMUtyUj0wBYPyAVqCslQHWwVPw7UFA+w8vrJajy700+eABhhida5iGeo+Tx+9
+oA1/Di1wIFOIi7V4U2qWFenuaFy5UrANgiY273hFDoGfPIf7E47XtaPOqWByw+uA
+HjSOS0N9M5Bx9mHNqzA3E0M+4YHQxToddAoEaUKMam+41/ZQwDW0vAEUygyJaq94
+1AbUSg7qauePwavzpHKyuEGpqCq1/I+36oA5UEJhHB94EAdJZs6c8LgB3+KDIpn8
+KIr8ChHrPw4kiAJ66vl1LKOC3YPOxh/MT8CzUT/rCtdbbJ90wwgAU0v4F0iTYHqF
+fGReNdt4z7ciQafUllOCfNLuGH/6sdbGBFtJ//wadB1ms6ELA3ey9m3F7DRTdj0x
+B2FOxll52vQSJMs5iEObto7HK6d9uabbxm20rjVJWyns3ci9uraymXYVKsEEKn/D
+ayLKc1bS/dk6A8bhaepLGiLPdKgNhnUzYoo41/tQBnDpsDfHHOqakK+NauwdFoOH
+bmAhrpILwtWI2ftd2vmGKdiALDIxDkQ2otw08Tv7uyIEi6LsVyUYG8MfqYQ4AeZA
+7VtX5eWwOF2QIoPUSL5klWE+XIVFX5sZ4eo4UjoOEsUyXbSUbvQFLbt7jXlNCqGM
+djATOSJQy1qf36SSUXk7eMr2VV3VnfU/YNnARKG9YGobY+gtGxB50JCg9c/0adRk
+cX0fH9pMbgg/ERZ5twM2OnvJMSUrws6xQNPkqv6wskn7CsTUJ7nGCprir/nOhxI0
+ezhyRZgaR0eW3MrrXWIth3VNQozpcGHpsPVPk6ZPTxPuQqwkPdY276zLImHm0aRR
+wVTlEGkxxEn7sRLHPHKnIB0N2JtoR+kqvwDlRRSzU5R5prljVxXjZFzjL0amHsH2
+whI4RTHaLzzS1TyaCjR9FHZBDJa7FP7wGgmmkcOZIhUyWwT6i9FNsQjy8PVzDuce
+Qneq4jpVOoIQ5kr1cTcj2zP+px7c7jFFq5CorxKOIhJtVpHmrD52dyN5Uz/hZSvg
+oxM0VK7ls+vwQ3YXTT4EQSZ2dC0dN17/szp7tQn1BW12aFHSsULZrlcLWJf++E0P
+tfsKV9eJJw5KS5AqGVANg7QX9t3Q3GnDVjLdpQbY9LrBJq2K9WdCXuRa6gP4sU/x
+JD6UwMtOaMtMBSojrLtrVkj54HYmld6ggYsqcpKLtnpdY2Ka76Bb9UykpBSc+BAN
+/c7IzVhPk/cJkNksEBbEz1w+PYBwsrSl+2AVx31ppiIObo1mSnh6JZl9JXV/keDI
+SnAkmrmZLfjtrlDcFyDorTOTTceQIE2sVkN1W3cf5+bzR76Kxol0YFC8DRorLJZS
+LOBkE+/7iaXrLaHLIStw1R9UTbSNXBsEF/EpCxIqdVVC6cz6Aq5f4IGeTiILKwoQ
+xoxwSNseAXGQzku7Sf1oRiIUUmmP+baKONZFHWGmpExuWq6z38/vMUgyABc65k0n
+LDcbCAN2fERCoAwFwIpYFUwhq89zz6xVVd2PPAQ+kbIBjeRra9+j/egWWr2xHvNV
+7bpAndY2uGaHW62ZbOXaSf55Bk0HsYWeS15mqKTSxGuL9S8dNc/B6iMua8ay5HL5
+S7O5ddyWlDpGXzwdR7OvQOkW5d7AZaqOknBKtE/IsprfH10OcehqjyH2DPH31Iak
+SEXrZkZYMiRC83qepgcxA8LCt0IivrS7zcHaEs8ljS2npGfk95EwGCTCLISpJ9ye
+/uavvfPqY1nXJdGdMPdsmu+PQ7OPFkqH1XsrZ0XxTnV90RNolcLVYO094aT8KENI
+HW2qNA5x93r0bjhM3t/V7C2UcU3ELobGah3YymdCCcKufbyHoqWDc3ygipE7JBKs
+EzkXsqPBhD9Uf1PpNQxN6mydqbyiXSwb31Khpy5BbdV2aRRRDHbEcarTErV3dDTd
+5gfjyX0aPTZlRcrlatrN1QKqGly22VAz+UICKHVVzARFstrwu1c71Jbrj8cPZNdd
+6YfAAZEL24jTYyTIgOsZnN+dMBQTbj3Ad8Vt7IHaKTAvzqVlkKvtgtf3zKOFeGTP
+wDl64mr0u7PClOs1X+z+R2Sa9Qcf1Kdp4yNSBR1GyFgHjvn8koWFQrV2qaa4iwIQ
+PqrgfdoB9YYkn/JrDiJNLSrduXW4UHALfi6LU8q7MwwXnnEy/SoXhDOGuYDixfW5
+63GUstk66/RCPCbYHq2Ts/hat/U6583XqrULZHyPvBNGD/Ihe7r8sn35S1wxt7PK
+VmyqKpC7ZTgMQsJ6fZ63YXv+rQHGzFgpFGpM5dMx3lN8wZRsv1Zpb4pg9BlpX+IQ
+ywa0BP/6ZvYulJgJd/Y8tCLEp9m9Gr8xR42x6+zpdfLOjXELma0Cxm5Rg8v+2mQV
+BqeqzUuJOhHY3by7tF6vqyVzEEJOxJsgvkC1Uqz98hICPxSkhpW5HqIzfu2fb6TO
+Xz6yiv3iVl0FgDdDKNbtcGPSZUOxwwYuArhK78+tdUN8uKx3dskCu8/GOtliUN6Q
+yH/LSKmJ/ViIN/8xxxZCPfx6SGbvp9DYUo3JUkjgKJkuRL/fXEDJhFkGtiBLhHWN
+jio/MhcwtVt1azBpXiUtFS0tg+hysgA8CuVARGGfEeD0NK1JZoFjxiKJV7ks+yeY
+20CBcx8HXmOs+BCY3KInegEgwioKYRk9HaJW7bqtqMOpxpsHJFnMO1blw4eUuVC4
+/Io5CHCiPcIkhJJRjChzhPOvVMwZpdRXezqIBUrCK7UUWxRyJTDZGthuog5LM/qx
+WPxXy7sLjynaWTNBCc94aO18qz6Z8fVeT9O6YwQTHPG1f6tYQv4yPQZDXP2HnOjc
+6CdNIk3RtVmBgoJvGNMCus9iG9cvNTj984eDE7/1ZB8ZHKwOhh5nUCjQMVUVaqlT
+uvqp6DzFZBeZhUttNGnyx9qcFmE1Jaqtb7l5gdFsP4xqGTvKje3l77sEN4N9mpW4
+vhCzmTAU/IyqOHgtBwYbeYmtVUywAxNkd95C4WQWZHcmdhBZDlkds2vUpdWcD9BH
+2EiMH4HbEE7bnkfvGu/Oc8ERqxyFzsjQMd4wOfAzOB3Yq7YpBgkasLUaCkyyXldE
+oKJUxlZJ99mqIbl6hiIJ39C8iy7Graj2DMQjEbH+bXf1hLnX4uQeGsjjMJfDM28O
+0se6KV7ktIj4kNh1i+SBO3AGNRIJNTfAPFmJ0GoOO2To64jRn8nYxk78wRtT8JQT
+6uP+b+g/e0R2PC0eRv9vV0C+16naslqN3yog3NQb+w0HzdIjQpQLvp6WHx4RID6/
+Wk9DST2U40i/0tj1oLy54uoW9nHNBxlw0WFWaIaAzCx68Pa+nEkYj779/BBNfzqF
+CX3BYo5tBXRpC8IhUPd7hNqEv4agHCJxfkyG1g6lP6ZtKeiXd3Yzds79MgnD968D
+59IBsDkVChPF3AetZlv0yd9KggOnJTEFL7MXTG6GPPK6kmkH8D9wQSt05eRrXSIH
+wWJxAS64RhJPjm+HyU7rR4tm0mK1eymsu4nADI0WnKDUw2+dc/AIugqnnCsahas5
+aU2hcbQBmJzVhaH+rDlCHI2QkINEnqLDpr9q0HkrEJoX6/5R8p87FOlcRXnAauAK
+Cn0DxYOyAkOmBgqudYHbDaffj6fop45KbQbOENPd/VPpmGhsIXjQOdzxM2qoNJgG
+znM0nS+XtPRCwSGy5Z61EP/5RigwlKI9lOCL2ZNHXvG7v+ed4NoOvafZeJz2ad2P
+lt9G3e04H0QsYInInEyjo7JPz5MLvlIG4xbQMt/KydpJNdY8PSLIKEqhQbvXazHX
+QU8Zuuk9TTNEDXPtVEMkeZ/FVAA1PEY0DJzXHP2Rs3uP0g0h5nUrvhntRgE0o1lK
+aZcx95HvTWThuBJMFeVBl0OjQwIvEbVQEe/48GVxm2hy2PGMS16QIxe9JH/8iJUy
+6wKvzGhwwgCj07r1EC1xwk2TWUZAIhOpja9K7OoQ9l0ql1OslnfSRqj/rpDTZnMc
+eJSq4T+aAiim5aAFV70TqeUVtpAJ2FtnztYpCk3+SNRNr+j1Txj3uMLVZ9u7nLl2
+KrnMit0Wwv8I0t2QoMsQd21HyFj1rG8Y0uITnOuWwa2iFJAV27gEzS71dDGGIqa6
+py0O0E4vKspQwcpx1NNCCZQ2V15V8D1FV8zSQ9MQpaTocTDPjmVouFloaix06mqK
+GWaxq0eU6CXpGU5N2ngUQEPp4WoZJttecl6iCVVtVFbN+xvk79s0F6v3FgYEvChJ
+6627nu7jXeHO7K35bxA3pRfcOI7+BCfHgxQDaZ3nsAJG2vwKwL3MeiBsV1OWilrH
+nYxmJHDDmSgioabZ/0+lVu1tl3Z7Hsj077noih6C+Srg640zjohHSPA+LneA40RG
+JAzkmESnl0/OrT9AYNHR4o6hSe9X+1WcMfd6PrnJYq64ZV3XGS5qWGqPmhg2OIBf
+4E1L0KIKx5/7a7i9i2hsYSsivsbgWUM5pfD0D1lPSOOAsLNe7w+HWvy3eJ8LOh+q
+RhQk2rT3GR/2nr+Mk3GJ5EwAnaEuKdqdU5iiaRqXB/2/eLdqkjJwabGID4OmsbqB
+vbkNsOQWUKWSa85j7h6DJsY5JpwmGAtlulpKM6nlCYdEStM4zNQNaFztbNkZhehb
+maILMpSkhCzIekrhT6MpbnUF02mv++B7Zw0scAKI4bufFyVrSHs3tuFnyOO4d+1B
+zm/9xbI1ru1p55V7Qvm0Fpp2OFdC35P2ux2ZIvYsbu56iLblEXgbVwAl8B9ABK3m
+nVyxhKT+0NUQOlPIBUAYQcob9CO27663/wwWPtQmSxVKOPbsYhR9sEFWonQ9b/Dz
+csKSJsQx7LT3DXHQ57Pq/AjSB40HPWOJJKUwgjRfJgTQVGx9qR+MHRBfE7MyOLeG
+6YGEqT+ckE+Sl3aTf9JF3H6Shv9Ajx8e8gX8eSr4+lrZE4HgVbh0nrhkLtHt/Fem
+vOQLLB5uw50XHFde9ZDgx7MU5//vLwzUdfd8LP76T9thOnI9CJNtVgNrNxZAQWh6
+hrXyzu4MRZ+pjd1x0UMKkm5YlQAdzMUUc9EfBrP9Ckv9dxZwOqecHklY2qN6nEIO
+R4jjWv6fzYlkxnM6tlOgfAxCqd+Jpg3C4fH07wug2mdrZtVsTGFRzYk8hPZtlqhV
+iIOIskbpDJVk9rCoB0HGyYxbUI8hgzlJjmEbDSVrGyESyly9YDWd+23HqkI/FHcN
+x6Dj3XQhnLdhkyAG87xdbGjbt2UwufvTvJC/b2ix7UbOTeSeC+HcjSwZs6wSZD7y
+UuSGgS1Vm+Z8itd7IlAWdle3oplgQmHGlrCWX9xkcbq3JS0W28BRRiEWNQqmI4L7
+JlyuVgcH74pgjjkgaQH+TEK+3rSV4FV2kJv7PsYy1YPnYKXHTDNHt58/ZFYJPaWd
+nbVk3YJLoyZCxLQ9vd0GAKKvMRkZ3EG8ASf+DrEC+w0naBBbJAeEX14YssFlYnkr
+CDQk9YOscegqlQnhSgLhS64kq7gtkTEzAZhW1Zm+4Zd5RepdXLy4wVKC2B7WN8ML
+lSRNXZnMvqIhCS+iiPcpZLVN7jYHqHME/AcQxD69TDzE/fRQN5Kx0LBN8bp80dG9
+tZgF3txe124YBeZzJLRNFqRh5igZTE4QlKp5RwlSZKBWpunuRkfVtnejdXWcuuTq
+pe3sMjKTtwFY7eeEL0TDlDFYQzwJVCistav7Z7oO08z+2DZOd8S8njNreUjRioZ1
+5JrkHJIehWp/83RWqNZfmPChaJyaZ+P+5eCkOM+aFD66+6lXg9TYPq401grQSj+7
+Uy+IjeZaPDWOlNetec/ZAaw9PdE00eoVBNUyeRUdMH+d+s2e8KrvG7TrYVjCRNPV
+SR6rcvATYVLYW6AemLRnP3ZRodsrildFuN7pmmHbYBQfPrUGXv8GctbiOP3RgYx5
+lD94HQwDsR9kBCSYfAAlCA7dvJwEyO9JLcZkXt37tmSdC/qjdOJctf5/o0/p4A5n
+xCrzBAFLl/5+9yJBc8BU50RxVC1w1tfJVOZWK8O3eqCXPtEIpw9NdLCUZGahjZak
+6EmaMHXtaCrVle3xM2dLg0sY4WKW7DUucnpqDoyMvwUT9W1X24DvN2JgwZnmmClY
++gbZqXtustgCFPJo9V3UzjJ0Xmk/aFkCnNVdvvTiFSF38dHPucohZgR1/msTCwlk
+tka1oHwAyYyMbY+DiiV7lRYP1M/RJJG4OVI3e+8/T7+1k3SNRgFe5YurJ35250jn
+/KnVduUuID1goWhwSz23whS3a6K/VbI7/KDdh2PXSM20+hkBc6NAaOw/KsoCQPeC
+jmfGV6Iv64QaCGdN4fFl9RI9Qm3jXiLNWzHbm1kNe3uwPIuVPpxVuLxqlPBRMS8X
+okCF3ElCssnwl0a7xs7vPsAbrJzKXiq3zq+rKpidNO+yJFO7gXZnTbzb/HwGNhlj
+1Fzqsn3kTRYXjZ8tBrDIF6JNAJO/9SEYOxy13JepQoQh2i0elqG9KJmAXkWxyUPB
+al/3aipkw6RotWU5a6fD8pDq3XuzwEb5OhU7ltsDpRyu1/PA0A6zHvDKg0YMWpNC
+UhbT0z4oFPrNfQHpDYUiQTbxl6ik/i3Pc7drAjfcqE6WVUUap3y8f96Z01TSexTX
+Rc1P1pmSh1VolM4rFzU66BWoOHkkwytNnDxXTt8tmyeaqC8Msn+v7f2W5gjoVopO
+QJ5Qsu9N5krVvXbTyJRLtFe4pNGuZIal9P50HpHynr9z1bOQsjtDrR7yHiCR2QNP
+AZ/kfWtPoLZItaGWizOW3ZN7h+f2ZR1TAw4byq4/MOtImj0k9jfDrzY/iKX15pvM
+BqnJL+OgqlATfcnlEw8YmL2+J6bmkQsO8GLCkZ5Bj6lJpYOxxTOFYqHk5B0oybnL
+V8HgC2RGucEFSV3C394Uvg/bgJETzLfk/SqT+fSoIQvR+mNR7o1XU+Uphi/q8GpQ
+DbCaMyYbol5Qm9v/IM9qmK8HAc+A67Y1W5zuwg4EJP6k0IkTpDZIbND4k/PXi8eC
+winwDp1PxXYyDKhwSYL1XBxGfETmybuS/iby8DexHwcnf0tte4g496UYX3+Pry2l
+CdFUMyvEc02kR009CaUQXGpQa7bh0336Y2PwSkxOfJATzryJzcOuJIuZCR9lhnC/
+8JEDLHQpaTihD3oMqTTl2UvsnZhWStysUUSYPzhOW/6yYOS1/slLOlN6z5nJfazJ
+6g0+OHBKjHsklqQeVL5Lhxd4lbSlzvzj7z/NgysGPqfm7PmfO9rJaAxYZ7IIrk54
+g6ODe5kwOHOpDZqKrun3rxir4T8YErESdbVhyM5L304YQZYoq1PHZIg+PBPwDpBH
+AK5dsSHH7QsaOGlr0L5DlKtwEDt/Zyv6gvp/MP+V6cLpNMrNlxbsKWN1Le674Qh9
+1JQxMdanNvZsL6hhvm9jVLaI101h8KlZSY4mZ9NMnD+AVqZNPWGF0HSWoKzp3Eui
+5GZ3K70dHR2qgfBacofvA6C98en95znCeJnAyYicep1QRNki1AwSwwrYjJYd4mJN
+r/vdFSl1Mjnu+hDasckwZW/8qftOpdwYknGOEEBuL0XE+dBVHQjkTtf9txsQh2V7
+NjaAQaIwExEXzKk8t46KUIfA69qo8jvNY+g5nep29xQFKOjdsXr5N0B68O6YPpeC
+2gm/m469+lXoc6S7lSEfA9IBjPDOtIRJCEPkpAAjxJQ6NoaagXPqlpUb4jdnpj30
+RbVCUSWNnA4hY0wLMk5u7kKUQ9jfOh0ZJY/ZtbPd1UhBunDKdHDkuXWRlyTJXkJe
+UxevMWmljYF69FGPkieZXOZbdlRTAcwhwVbHXQbUYa3BMK1XKxiOUkLixyRSET7T
+kGPQHIU7txLsGOsZb0YLtZe1pkdK7aakGS32vM3cQJJ9w7w3HT8iC9SWQ4/ZNwwc
+gmI0FogXAEnZJI1JK7XnU9yOrP+SrlhVJt+BmvFnaV4q4XaEMP/76UooV77NOb1Y
+EHcJgDiMhwVKmGgjpm6WD9zSE6IpDOzf2QYEEn1uCH2lex8ekkzlgPDOD6cJsKf2
+dgZjX9v3/G5pKmBJ0F3l2xwqaFM//wV0/o11XN60wzJDatHVAvKPzRoIVovo//2l
+OmrKaAWf10ggHJXFEqSmmtwgp3/OTPg8nxU/Cgs3IQBg1Qy41wmpiACnL/KYO9mz
+l2yzhhbIti6WYA+1vXdEGMtQsIwVXvOkLca4PHPxhL2mxhCSjhzFntLeDIF7mtLG
+n5K4+soI98bZkRWQYf/06PfGchC3o0VyOT36OsGet/P0tL9+lCeSxoYktR9xdIOu
+Kc50quaGZwZFWxRPtRCdbKt+bc5C0UfLKl/sfqzCC9D7VpLLj9Lpm2U+IZ2BYy2E
+pShG1m/DN1A/rdkASkZ/3Ch1u/nHV/g5qWbSa01VYeDTvtZihv/nF1dlNnH6pLaH
+Qo/5BcJSky7ZQuOLLR+0HvWAfNNdtcOLgBDUGHyOoQ0TyIL3hAquG6ONYsKPz1aE
+Mv9aTMGFtD2EmXQ4QssCbu3b9GfQX+m0cZWINpUaMI/v7Q3ZDQ2uljVZHCEDbFvN
+6+xCCk/5RCSW3Rb/WQw5idC4Q9cK9ETL8ZbUGgm5/SGM6uGvhSNGU9wuzdqff2My
+zu0upJgme6j1E5DTD3KJA6A0lv24NqwRgKg2egXcpksJ8H0SNXIDINn/CxYPC3Lo
+bdXC8Xbrll78qPW2I/IhzVE41XJ3YWTp8RarBNVIBdZPU+MIHF4d9rqHlPtkoKYB
+np9w6y4fKb/2AKqydD6Y3oU+Nz4N5CodEOgACpcXye3iMytPl/NPrxzMDYTnulZd
+c0fODW3h6v0gRGZV7kzY8T4DJEqkgwZbGZkraqhZDHiNIynKbTTGD82IetDozpNn
+netwrr8WdJ8Ur44aQePtgUvl4yd7qQilsuKfAIQMmV5H6eYTaZ+ne1JrvKyAYPF3
++UPnXEtGQg1IKVd+ZGfmeI1MA3QWfe3KbXNHaRw5LpLajRTmzvO02OShl+uaqVYG
+7u9X26SV+2yXGoTsWfeDOU0h1Lo2Cztx+ppjZJtiMUod6hdSLLopGReJCo815VnY
+piq7TQEZuAnIizSY0OQmKgrqDaWY4BW8UTCFzgaKVICWnzbgLx38kBfXbQBjq+ge
+b3CruOViYrT3PVg+uO49AzbsilGLXK9LjqZErogWlZX5oow94Q3H/LSMFlLVFwO+
+VOfQEruPYGpn6ps1t/QPww1WuZ8MEVyijws7r8XsefKgHwemHjDKfcxQP8vhlAp3
+4/00vp1cnqkE8QaKIdF7YhpFIWkL7Rnt1cec9rB97xfADMpeHN8/EUCxUTYxlq2/
+lWbsRqWkqWaUWBtKARSSDIDNX1/qZbbgKWEPyytOdyS2HgxnfFVq0HSKVCycV7+t
+B8V0L5nRky7a1whLxb02UmozTcZF5PmCxoVeaIc4KYpldFNQHG/Bu+6d1or2AolY
+uhpEIuI4VmsdgFKtava2YS89zBpTkOySjDOfbedBf4oswKlB48oHYnMPeIqQUHUV
+E2qsFFuqYskhciYG5PPCETCEHoB5H3BWgf7a3trGwYpkVAbzoRGhtUO8Tx+Z4zAO
+pooEOauJaXc1VW8u1Yo38PWR1G0A2WwuVUdjoN5RQu9y99P4snnEtluBgcklNLRn
+8wLS6GmmOv36a0vE8oTxKVD3rac5P9cURI2Jt0Su6Rucy9U3nDPVt7HDsgLxtHgA
+DjjNO75h/dK6zJIneqY3J69nffEy4EywM8yamBCsvVFDrW8PTxFdbzZkpiT8BQZS
+CnAplN7CO9G6pouOMeEwwMuHPwY3OP+tfLEZaLZ86iWSIV98mmAVniyp3yzwgrPh
+OtK294CYe9JfkGZ1idoyG5CAZtQ+Xtaip1LkX414JnT9NpHw26K5Q9kYxDwf8C11
+Ys7nDMU1gZDrLf/FA5r4om1IamL5CNd7xoy23fvLu6M0igCtCM1ZaknMUE6kV7d9
+DhTQN0KQ1XlfcTERu2lf2CHVzuITDyNtQtv5dvCYdJcJF+gRTtewiGcJDLO1DmzY
+8UEbQwgQs3igcYFGjyKNBirzyMrIttGna6PeTFC68rWvD9lYgnemAUQYY4NrBcQ2
+owxTdTFkCML59+EEy6SLjEUIAa59yTtbG/d0lbJTofHuwsghbY4JjnEiZ+wNadH/
+Gq1EtjApmHSk3nr4/RFXsPxZ8aA49+J8t6qEoO/JURC2ytERcaldbPH7qPRiL0r0
+Qm5LyniMFoNb7mLd/EujBnkhkqPzobqAG0QzsUmelVqLbJv1Qoo1zYnxFK63OWzw
+FloDsGMN1ZsIQG5ksQRPHPPvUJvAMJC275cCd0rDB9mNh7jOH63c7kNVheY0vWC4
+NW9JMlSH+F4/xXGIY7Ja411umom68Zz617+Gtm6lZ0MYaHgCOQem6ZpsheA7UTLd
+Vmw4jZ9Rcn6hc6NKr1EhtUIClNhDobugq04uZMwa14dg/J6AGvVwEQo+NvfO+qWC
+wPc7/UYaIUXGIxtaYTMFfH74Z8Uku37UJsDtgZSwV6q4X5eIlaeGxVjtDQUD6j4i
+oumimpmR3aHOCN0tq48vNlpWeeOeIYwxAglw/6o4SkUMFGIT6XXTxGOmZe0kbljE
+csdQPUF7WqNBBYqooCgr5H+j9FOFJxo4/KKrjYBTJ1SpwnGriNCI3AfaABUqmwVw
+FXYj/pLObSKpzWzKT4pzf1rnzmmW/zlFuPBhHybzhZnVmAEFWWb5MC5V1kxCCX4f
+/xcqTFsnq/sKPHZLc76LTD4zT6/Sprj+IpqANFGVdEPYlGgcAt8khBvNy6oKYhqL
+DtO+F9R/G9zVHzReJ+l7QCpjYpf2LaIlS2KFu3yrl51FqZhcfnvzP8H05g+dEq/k
+9ATXfjr+suz1IQnDw4NFPyxv2r3XnyR0jtWC45gw2k7ZTOOoWyhSchRX2RAgngej
+hr5Ws7QYLbSVkeHSzDRhpmVQK5qipi31pA1SuQ5KZOMrgPrakeiapgr0OdDFiEcZ
+9O+qgZCFL2rwSaO6LEQRHqo2nKWXRXcZROHZ973kMi+0cZROxM9rbbK/fu3d9IYd
+gKgxMB+ER4hzHDM/8tPC6o63s76znDdYpqaPQy7qLvJv5Mtd3RCLeMuv4iRORS+i
+P+Iy0KzCvSAb/BNLVUWBFLW0nLxuN1g4jo1pd9S+tOxhQ+WMyt3F5txgN9ZO/GS/
+NzV68yp2tOjjDzMVPPu36g9Q+X22H/IsBSN3I7Tg93Jk3RXgaoBwjronLYqJ3vQR
+G3Y2G8A63meDMSyiH5ytYbpfq9dSUjJ3toksdGVuIHPD4o3G/N6ldjj/jpudfE/x
+ek1+/dBTL+Rhi9wJ73GQQLs72LVmLuXrQyUG8fmqX/S3FjzR8GKTC1LBhZ4+B9pW
+n4/gH+VKLQV4ZQaxLEjnI7IncJrmeffzQqs0OG1e2GtgLCjFgx8SB6llXcJenw39
+Lm1IZ1PNWKvacDK7f11eRB8aw2IqZbmAeFXd7bb6eNBoMOF97XLB+CfVgzSUJDt9
+Vl5rfH7OvoDU2PNU6wn3fWCkWiHwm1Ow3Q/4EinW3Vc4+CQQRg6LOuZ8c94HnA1D
+wUriukTHa5yxyl/5usal1f6R709Vaacg/rQlFuHBMA9d5RBb4F3ctslc/ZJB3Uto
+9soyJfq0ftu5gyFPw/RfFKbuUxIrhaMLPnzB0yH8BhsXMj/7iz9Ar5y/9UPsiArW
+sei+zdxOe2qZHI4AK9XBuSV2L/K+PTeGLTfku7xNQqTprjMC54bTSBpSZKne0Tb2
+SbPX6gpKKpWDAkdVOnVbLUqjAij15M7r2mWYnJYblLyC/bqGFdUJ2KHkVIVY/0Sh
+zt1G9tiIB45KhrrUBkPDyNcKluMfOYYBubJB/KrIQo3Kzaesi68zt3TqTa5UcmUL
+aVKNONBFeNxTVW2dOduNvUfH/hHPqcwpUPBKqV2V0XrqnkCOszLvMB92046nt7x9
+WP06iVwrxyNYK5IynJH2vj6jjvqonXvYL0+5nGQUWhaQ5uyDSabktM/AerMw/EzY
+4+AlgdLRCxBsFbtbf4f05yBbJ03jqmjXN6eCI3kB6SocJ6sUAmmEzO8KzO39VFEg
+GZpo/LPh+0m9zPcdo6Ox3b6CeLOjxbr3HJVVyWaJIqRDBJoEW1s7VEG875EIf3nA
+Ip8a+PtyMP5HSF4fXVweLRt6ev7I0IywU0n1UFpd76oOi0ZXt7wh2UoVT12d/7Zr
+MZBLBejialO6OqUGw8Eg5CUKcuos/rsAf3tcn3F0pkTaxYrJQ6IuQvugiLJC8d3G
+w70CI9bCUEVBg6RWp19zKMZBBI+yfAmUe3FS0Zqav2L3liX4sDWfUWEZphEICxhB
+EMonUq8rwO3mU1AFpCLlaAQuL1YNeJwvTWs8L9/iMURPsEtPooED+RS6E7gHKRfD
+P7P7nKj1IV/HDMd8hJJy3+799ROr9OZkjdzxEqNQ20ugpk5LWh1AH2z0jpMG4W01
+U6gy4kdcfC3jL4O+lm1Sz1px3d3WdKj0W8sjMNRbSeRW9tHB31TlxRAG3vUOOWS+
+PQxbiqUJv1Cl37ecp98Qz+YZlr93afpZvXmXj4U+oMkxlhQOtNGt/s+oUKIaBcBc
+mmNo2a3G5IGAEZv97i6A86c55UE+ckBz5Y1YNt/PyXVVyv39Kks+wI9JVsu6/v0F
+eAot7d4RSB6QRerVVlx3OngrOnj31c1CcI+ShxtnEZkOcgtwqEZ3dcjYT9javZ7Y
+LAxC9m7ZjsPuf3hZSsboMJ/Az/e2eFDF7WDO7QNLZk7yMUOjhqiqsTk8U/uGa0d7
+cdFe2DoV858SEAal2oJWe8nSFAbdKMiy0PjluDDT76brGaGURj22KS+VIxGvaSqO
+2G4AoCPKPIJzEDBHgR5WV37nqgbLmm04e7+ae/bDB+AzZFY6+Nozb+ePuHZnXOa5
+6lvcsPinQnjhDueX65stVW+pxpaqjDhCLvaJclGe34eK4CRytmuBxlqBX3JgKxuE
+8wpz6uGgbkRLt0uEscaYNopqHO0seG+V2pK96aY6EFscR0EhTFZCAb+bOE/J0I0B
+hbpForC0B3EcAg9HHTr6cuSlE2xjYiTBMxKmfFfPF4ng8zcDLL8piHKKNe84gZ4N
+ymCbQ4O7f16ddWCBNmseoF8Lutof6DlcnLx+mEqm7xJEOkdkNTGIMIaIpiXRBev7
+KpxPjJVwa6N4XfLcW8HMml2xvwIVcatnawqgkm8NSDPGm142Jj8xDE/2ux8wBieB
+BThvbCSN8zVn2G+xwaefaXINn1iFzpsz2AObiQRO7OLlHDF2Hfi4y72RS6/FqiY4
++YzYtfm/fGjHYmhU/Tb7aUdhhnvquo0EEN6ZacihRrxEH2RuG+Qfpbx/vwnaZwzf
+Fi5EuPnxzacw7dnAo9uBUcNFYYyq/ffrpp1FLRfvodSkrJCN4YUsfFvNwBql9s67
+0z4T2osiYQmuqq5PfXDm2MsF3eLu2IUByImXlNQBJSpHPmCRSNR9G1BnkUdc/ssW
+CFhOZ7fXo26dBGOxlblKDYYKEdQ5uJhGiUPAtWHj6jQaXsYCIdhqVCXNCfqufRsx
+PaLudOfEdsBIQwttMxJkOmHeJ0RcXZVXTCy3karYNYJgKHof0qf3710e8Yz1kmWC
+MPUwQq5L7e4zvPz93eLUTa7ghnOqukLDBvfxHaSuG51eVMo8QYcAHDhKip10u/fz
+EyGonWgPidy5G8gAjcIKIh7DkLQ2e0gbJNuHo8ONGtEoSvc0h3YAkLIwHFPD0RyE
+frbZ7yU0g0zfQRwCTyQHJLc5PwRmQ71HJYfd0TWhfGSrfcAHw9kigHJ1t75YBRyc
+jsqa4r3qk+vX9RVoK6OY3aA3ODOPfHZIzApFtQXe1cNOzuXOYPNNWHxIO7Pp9MGT
+0tQtQUvLYrUD5gkBcAOkfu+uuOlJ5u/kkQ3/UKtel/P3DkKCMqzrefkasMZRWRfW
+7m1iGHQy1uPOZAvcIzoTGhxp0MTxoFXFrHO3b+SScLEeTEoXuz1gPc9LviU6cLcc
+JvSiUsS1MByFcfsxzVzggS0pN5mTFXwuV26dGSuIfeWdF5zm1irTVnw7197yeB4+
+3phVvNrrqHiAVLgy6d6s0C/heSCHXeiuhKxhfv0Xi83t95ZQv51EyJBOl3y9wWLb
+cioBfWigC6FTro30DrfCo1EcuaKnnArout7tl9tt5UkqMKOBK7U/4fxfHrU8kwd4
+D/AtHlR5uxotLMmfEJnFoPQkFkyDR4/o25USGfU3m0Dd6vC0/9mSUcTxk+RXRTaO
+F9R0g22j5/SvOPhTjETD/NP1PWDiNLLxCc8dDn4M2sN80unLNdwG9hXu9mM6At7s
+359OT/nnaJM7+/bcxX2xUV63xjlOv5JPsi/6ZMgB0AqgfMCfuBbMptS51GbZDNB2
+N5qadZ2cAZEQtP68mxm+DJyuuCBx7TQgWusdbicfMHVhCCzzs3ycz3+zJsH3i5QZ
+jx1rPIQNho4/Du/moMOVAUYdaoJkJQP9mUPuAcLGQOUu0PU1Bg/xzRF3gMfBZVmM
+0E/kHKLMzJSVwh8Ffr1x6C2EvonCpDU0o8L9wY5ujqYAna3vVphPokXuSFJ5sBg0
+BD8jOyJ3DrtEBeAoclXyIHXYf+nFPJzFcOyOOORq0dBkdNu1xHWRzgo3lItVJVQ4
+tOuodj7x1TuUHTQYgmmLqZE4yPPrm+wfjuJPGjjf07hPwloqr+xjlLzbMwO0Kjg6
+VNVPO6T5zgORf2s0EwbbHwtpUJF09N7ek8k1lBkp9163AhwX2Rjr1X2EJZdPwi3I
+5nNeDTXklM/Qu0ZTGrlG6ONP7FYxvE8EdDoriTaFoZ38sD8ng5iVyKax7dzEMnSM
+7iSLaqj+zx0kv5TIkDVaSsacHFQH1tajsVsS1m/LC1S5gZ1elJqt2HSy5sTaines
+TS6t7oAk7DX9SqCtLoziI19hX5FuuNVLlXGc+mK6MufhCkD6Mw6RC9yyJzani68j
+/KYzOXpupzAhePhQqR+on3JoSOfwxyRe/eDJ55gSE69PMWK0K2gXgS4t2QtcE2Qc
+13ux0/WUnYWwQJpcpmJ1GxJV7DfXwCuT4eZJbT/3K1qSoTVa6tGZT0MIdB4N6F1W
+mTnWkHFlAqpn8uuu1pUirT+jIDeRcbfzCSBeewkd622UqqniDxGmn7eeLGeYE79Q
+RPcx1EhrQlRs/a2bqQ+MUiv6YK5XiDk3Uo7SGu7RAmsyndvvqUOOUWd+HlzKsUWf
+s1defk3g3ITrG6+SpxTxURBtwpvxCg5CxQ0Pb6PjvpB98cBeinbS5yJdt3Vl4eM8
+byvsPFPDedfXFwC2o1IC0ZalMdAZ6/Sj406o63cq7YtOgwzIkUnzXIizN9fmxOq7
+OqT9ruANkxG80LL/TV7QPSnGlIMvt3HP/jJaCddKjXV0oyA4PG6BWR/ZCd9nOJR3
+93phT1A262x8JL9rYJOlK3nR8prUUoUPVzj+MCJFbXr2X49mnxaHZzDSlYPaEd7N
+HoZUuyHRx93Tt0C6hYjjJt32Ox3JvsXJ0kI3dbGjxRjjDF7YCymNMT78naGHPzSA
+ZS/v31ycg+jjX4uASq59NSPN+/1RMvhBhxoLMKQhC2f/wv5ggyV4tGVD8VA8ybsq
+gTn/WqyGLL12Sbvm6aBFo4brbmI4nMQIr9LMJ0ZnfyHkOSkK/rDvWpd9eWQQxPOt
+oet3nHAEPuPZB9v1sGALbnUrW3NWqYEzWA/NjkYCkSmM0nduVxUXahCS+nDTGA2U
+bCPHEhdgAR44Fg8bclmkmNRivrOJdhM7MkJlLcHKPo4vetFehQU7YOKKcKXDFvP5
+omBwfR31fLPfnWyIA6wchuBjDdX8OF0Kypu/9LKBudATvCS/TSZ4gO9utZF4pygQ
++v2dAnqjWwz3oH0Q5aE5VHQ6wzVinxRn5MRdVjsdDBlmXlpHmFHOKenZA/X2UC+k
+RHVnUJGj/tZg5QXXKUKXjH1pHFqP7oUSEoQCHRc5Rd9Q83H1nN3f6urnJ3Bc1q9o
+hk9QwIlc+2ihxPYg5nEuxHPAdhPEk6VB8VuXDGewaHloyJDDpMhmEHVrnFBpKzWv
+pEAQFvlYiSEJMdpC6t2WT1NYdoqpCsorWnfXG707f5PrSRQQFIDse7LFROAZl7/2
+tOUhHKQpRsnvuaEOlO7pM3iptJkckv6smfbSXhoGThrnQSL+rd3GnjvjgkjYI8ev
+C5GVhynH0MXgKaYL0zPOMxmOXQT6vIgKDedQA34+KwYj/Ye4rdqAGbAgnEyFuTSL
+w7dF9K1fV0yVKJhsUwwZcyBiCA1e6ppWzWsqz2m5crkl0BJuJQ+nTt4en2muRdea
+tCz/QHd1xEbqp1TOVKWziFXjA/fL8f2mGKgQVfHtCC/wRJ5n+10ZTTchhFro2/3A
+ALQgwO/LOKjDYFcikgzgQX0ZI57d80HoLo7Pz44MDsOn+RQ8FU4X5HH3se+QKBBw
+wHwn0/poymWWF8Htkr3z+NU1ohpo94qMpXfblnmo4ygBf5atgMBv/OF1OtfbVZyd
+Q0qHkV9IkPAiZiHGkeEbrueJ8B1mdxNE51JYQkfRbvgt0r6K3ICVjgvNEtj4XCe3
+JtQrgOp9FAOu4ixIgYkkNIT8wIhF7lercJFa7T5UViyZF4mAqS/PMdvYz1AYiBib
+SxfBBVTZ9w3P0LOYeAIzma+0nugUopm3d+T2sDOXszhWNNddl0oKb1ciKxrQm4Hf
+D91XZqyo40ZlGb7H0qP7pzpHL5ukExP5FPFVyL5ILon2prX6Zl8lmsIr481ZJe/a
+gXB/6aMKfXLEpYZsICEvILPfbe0/+M5wa9wFFgu7tRs/2Z262UGT70eD/JYkzvde
+oGFFI/JpP7dWJXIWOjw5+ivHfrytc7EUSmmDAVFptaX+H8eQUp3nuiHnAyKcxqL4
+j13+D0Mamwg6hykz49+sDeas5NG41a3E7GRCviZBDRfExrdypq1eX0LNkLnnipr4
+uq/BO1J6idmocbFYGo4yKkabVr/Mo8nbdMWKAdpvaf5BXwUKlnpmXK+0yp7Dal/u
+VEaF83dvTIdIfRMOjgTPUZr4Gaq5rrkknSa5WsVan3jgi0dtffoFOvADqgGx5v02
+3AxEUGl+Z8924bjYAstmzZDZRN5eDMfEQiwabQDhANoJE/nC4LpqyS8M7VeZjdBb
+inAol4n6MYP6Bmk3AehQqb/7rkuXASY6T/XHMHeddlKs21mvZBd0QxHMsX22nRa7
+NKU77QAB3Ye1U3w6RYWWK0PH4DjEoa66mXzIdIadQ9enQapCghWtaeD0hEzxFoah
+nsfTibd1EyjEJHiKTWpEnop01uCPgsc4RWWvzfOOahpjJdqog47TeqcS+xHs5U6l
+EFVUypWubI2y7h4T7DuVvoJNyXroQuk8Gdvnj5gNAKWRKpJSHKaeLOU5T4ddH6yt
+j6WXrtcpI60tNxMb2c+q7uxX5YiI+XLrUizjcsqhz8+KdpTJD0INUdUf3ZN+O1KJ
+xHoaCXHxUACMNG1LNqveqTBjWxntYY0b5GYf9OIAJRpx/uovYlK/44SS14mJX28V
+zJINyX0rXBFXp0VUzPgBmEetXA6IuQM3Mu7tseUD4vAIbRZQ63Dnu9bo7YsO8icW
+7FSDCORh9qRsTXNr4zCTpfEosvIQ7jRtHWpbcW47oEBCp4u//GjPrTbsgJxlo2e/
+rCmRVvacwZMa1iwvf3vfoZcb1FIHZW4jwq3iCfoV9+a+249dvxWZ8X7Lf2o6FS8B
+bWvHxs6pk9OsWFVVAgIj4jXlK5Xc+Y7ERL9/b2ML3qlLGu99nLXEVGhdUjPl2Wl2
+byffTT0z5HvaIdqu5XXXsh5PuClt58d/Y1pwEzoZf8ts4YVdXT0ZXpqo/s0F+DJT
+tDZU5l/SjA5AJFEvkLL4OgxKN/q80feoTRz0vnNYzaMCQOJNnwzrMMvmR7yRIIIK
+T1UrilDPsLmYzpZupWGLL120IdwoYeFwAySZeDAcSJe/vOKwnLEMNXLT/K7JtcvN
+K4HhMsDwTZHr4q0U/BWN13JKVCZA5fuQpyRclTqEb8lW+LmeG2AwFbI1Hhp+ng7W
+UKSuZXBvvXLrH3dAKvB2C6Hcw+qp7J6hzsx9Z4EW2XqRhdYIZptFWVk3kvTV2Pfj
+Qu+uysaG+9RaT02HvLcJvqlm+4b+EDcPMTGuQui1RLIQyWRQfS/4uRuH+CyBUZiI
+pMDQQXUlJWg+9TuW/qJ1HWwBLwCymv53mNIcPcoi80Gx4guw2j0fVa1b9qtNY0CZ
+cMB3fkU1/7v+WMXz/SiG6Lr2FuG8KGzBUMoa06EMfjAR8Awd4DsdZ1WxS3O/xTIl
+b6+j7TMom2zArOj9p2vcHjqBnjc37IxrXX6vIht4mEo1IctGUChGUOqbQCN1UCxU
+oLF2MVl7280357Jdedtjcpd+zKkiojfBDluMxybj8Ds4kRkPztm9+QyejGnlxroq
+6+znFWCNZbwdKH3W5cY3hB+N5ciyIbEhTNWZkeEq4/XEhcMHOQkz4RsCAkU6xWxC
+rMJM4Ud2mwB5/YLUXw9daWH4W3eh0Vo3HzRuqfU19P1BAkzdeDPZnAUUDMRC2QCV
+cXafGPdugAaZi/aCbLGoxf5BKHoBwJyQf3TbD7Dt7fK7gSxRWa5r9k3+b1tIXLr3
+t2YEiJexOLsFP5yGga53BYafhRaeElBNGtoofU/qLC0n1qjYnc1fMOORTnMXXibJ
+UTZzHKicECogd0Y36MiNfgkgbJyvKWEv2XyjByXTF2l7kerWrGr6ISMQXEQcyBJO
+HZx0M6ObGwk7oDrhoX6VM1cyyLGOZ+LOo3jq3/+RkqyyGxCQYTLSssLF/zED1OP/
+SqOsDbNXEON2JHWkEgl+iB4GWiPoeN6+EEKKjV6p+pEJmzgOzIezzlLSxxK6V4rs
+i7/IAn14PKSS/3LdI3qrwskL8KaExSITGCHKnNGmDg2Zlko8GIOkLeTLfbwo3eJm
+94fDSUBZCpUcfcTHBLjJZhjnS+LjB14jwwNdc9hmTWkYmCt0RJ/cOW4TH0NCaJY7
+2WLg7HE0MNWePugCwv+cBBcMYu9pzjDiSKEldbOqkH/Iy/AVs/6pV935LM7FlWXM
+UPdkR3L3gcflWz9gx39b59J8eQWENyETiNvNiFRhRqXWVE6UXbtNROhQK86iaUJ6
+Gdy9oVN2dDHEH3GvdAy2sJ1RVPoaU09I0M98okqFrYClvj5d0sT7Bkd9At+LZE7J
+FLdz5xrpcxqARjnKq0j0UsVtyguL+K1bMZXqntnz8os5ohiDgxFETWbspnyxbUuM
+zfgf3i7bjfU2BI9Af3e2igh11B28xxxgVpai0bsHic9k2CIXbqg2c9TJMvGM2IhA
+SC+ahZhEldi9wleZT3ZLkAxyF2s4oU2uF8/ZdM5siOG8hMv/cCh9ct9012nRewf9
+VfmrHfsFUBQVxHQ+hdfzHkTZToaV7UoYO0SJvgYpWtnl4/0ewCW28nqdr8A6GhjB
+MA4L/nI5ketRyLD1D4QnzKeoZBO6D1iBoPMF2EbuQkNll2aoDA9vkD7V3DJjnTa0
+WLMYlwls438y8ZnOaxQe+RkZqRSBT1gdOg3SSdTGBWZSFxaBW2hOa8Ou1Far1SP6
+oDBaTFecrCDAlHA1mnCSnwIoYDjBy2KVBwGhkJmybx0EmSnhU+7zpxAZcbqxIqpW
+/mNGVfSNxKeYhM3YUU5DrIUYqcqoPDZrAiypdWlgsy1VEO95hRwpN8i10f76QqtG
+PCxIvZglWL1262Vnp2mJbfjO4EG9knd/lpYlNdLLP9ZTwAM8bfX5QaqnhskblA1Y
+u1Vnjmm63ch/snXkDGQXpuqU2JoP3XK87eRGriuchomad6QmaciyyJDxwrsc8SNg
+bdkzKAA/cbLSz+gqmaOSZsSo8WObSny9Q7Aud1zbi+PdLbA502ZHadlBneariUE6
+Tu4Tq6TsDW2TSb/2FLfTC7y6H4LU1DgP8voGZdOgmENSavknL/QBb2s9RSGM44Y+
+IM0YmIqgx2lJKIe3CGUI30UWdiZIK+ARh/6+PL55CDoxSyJg6/TCSqf7xTSKgfQs
+F+bjHPgfm4JY2AtfqKaFQgVYVAeUwPLgVabPuXDsED+YxgBFdmJ3fi/P0bapU3Ch
+K1XAAHUAESAFiH4QH9Uq0g8R0N76gz0mnw5rc4Esqm24WGwzIZ6GdqepZLt+IVaY
+ZNPzFpOB72pCnqUKV2y5fqg8wVQ8gK5GbvLuwA4P/uAR0g+4HBA5U7iLbCCWJpbs
+CtAjqQOeUE5n88m1XniIyr0+rlkMFmVPaG1LRcaNhNcuwX7FvC7lDj+F84KHGFd2
+VfJN4cycbI/OPkWK8behu5wNv1BMwRtuhDikg7RxoNaKuu/6y/MyE0YCFavcAN41
+hmFKHma7OD+1mipGNMDYsgrEzbYmoxJcJQfqMA5XJ3lqhxJfpYHj2OAkN/VR0kQN
+5YpNScLIuxa1qtfpFVd/uWIlvgGZcrj6laVVyNI3CgUnHhO6/Wt6FqaSujzR1B+9
+Kvd6FBnNehasSmma0RHewLPAJiAZzQka34gnwhW5KZ41IDX8tKR1VWG0+STll+y/
+BnWJEXy3EeBuu4ITqbTNayH3fM6DrXYWcvAEwfPB7lcPDGEcWX8kQ10Udktjx5Wg
+WVvTTDPAXxVmpTrNYQ8/NjT8ATDMaNHdLuPCVEiGYKfUS7F6V/faFhUbX5YLSkcr
+vhj9aY/V/CAk53pZZ/VnnpkfM1M7nbr6CECW9Y6VZH9IoR61nz6G3WQviyGwUSZi
+Nxzgemj4xyAocaxSqYPtsKtv8NXSQIcYfx5B/0YYp1Z6TSMzifgOuAaoUONP3KV8
+xURijWPY6IsJffXxEdMmvyfzQv33BUt8+FVVlkCcimyMuFCLdB4pL3UNpcEWbk0l
+cxJTF8f9Dp8eHYyJjhv338wqe1+qsYqOeq57rx4OJkQynufO+yjP7JoY3o4q0dp8
+FhUV/g7M5VzyPO2sv43VVQF3l4wKl7DQpKc7AXFbYCHp54ygQS93DAeSKSOidkV+
+cIYvb8QhvwZqd90uvl/VBmffczxdwP0TOK8o6mYXgca73wXo9ZakNrq2endu1dDX
+Gwebvd3gMGxGpOEdNodU9ZKpgjEbPgTkdbs659lRnp3YfscW2GTTXMb9SZJfLfdW
+BKayKy2xnEnVqpD8feMZ1/9EfWPRNSuKmdCcCQk5R1fDQsta4Hv97pd/gvaBGYFU
+wkwA8SdmUS+MmI5bgfwayI1NGfW2esvoI2NWyhKpKsj3ZHbmuT80LeiCirjdzCJg
+ZbOoLJTJwM8vJm2yRLHJMSsZuJ87IoRtwOy7AArBJJHqKUDgaX6DuzAY21zTL8mX
+On9k83f+6rSqoki+8wqIosz1wRoMnymIunQ4PK1KJb/bA+gsBrRIl2M0zQsEKEbu
+wNOv055LSwRv7nPdgxIX5PR4IKm1cH8I8wyZuyVc2THl+ikKWhOsLA2lHPyt07cu
+1TeDPP1zVHm7UqAcx8hh26KAoO5o4+kiXPJhZhVc9/8YexpJUhqgTia+M2LQG+5r
+CbGF5XCsApnlK7XNCarQx2rQSCicionG6FaHIhdZY1+/hS5gRLnyePUBMJBB2RCS
+bzkckVVxjxHPAV4JtWo7zPTd1pqXQVVJ7x7/gQe8HiibMWxqyBefnaJ2amzsSDK3
+e5L4TX3YlH7HgwJj6aKQhbStifbyW9Sgrv0BWqoVVOvrihmMHmQF7iE0hvgZtGJ7
+IAnNG53cVfjf9pmrCYglZ3RhyTMBVrB7fnN2Mrw89l5gLFQf4hm0TMPhalalalAW
+Z1W/1KbLUDPDowGlV3mbYy/LiHB7u6P1FgS77f42ymRpLqxLD0ZKHplMxjpnISZw
+5+B7yJue+XOmV5EVY2ZXzlF8ddEfSmlfm1dzkj+uSqXDlI2SunPyhqpyowDcVFYf
+dk4jEd/AVkTD8K0I5Bxc2ZUmn0/t2nUrhvbrqzwUnSp71rEk81851ThcSLM/w1RZ
+2FmYDXTaP7YHjgvaP2e0Mza/JmllxKwRaCiOMZ+6IQYOzCathH1RTdM1WzScsP2s
+PKTjfbr/K4jOlsB9AChCjdl4T+oI229QxR5pIiwTf9Kqk/5hU9G6dwE1omjHoMgy
+8nmsgCfQVUvqxT9njm7qYBuXvUrJSunekkmbo7kSIDo1qGyG8ki/DmwrmJ5BhDge
+2+bwlMzmTF36N1SsCR9SAwnZ1WPeRFN76kXBP/lMEkZrqx21KujACbd8KJkCk0/o
+LJK4JwQ+B/O+NJsXN4V59o2BX0oGkYiGgte2nH7h+DHjpUu8nNRKgTAuSWdonQkU
+ZvFs3TQcA92+WoB56tQjcgteKpow1PvLxRL5NnYeMJCtLdM9EDmxmTQI0v12pJ/U
+yyQsXhHP12p4MPQ+AGziMeBbeauhOk//Kke7aEkVcUCOohdwZnr9Yu6+hM9W4tov
+BDYtKvPIXtm8LSdwcm+kS1/l9GS7JLVK6mCjtMpRtRsOydNDgfNDliUiMlqQdPbd
+QcnjcgV0NbbciG5mvpDcS7fKtr9J8aoGRNTgWUj8l0OVqgGNzZgau1rp5A28zOk6
+JpEuALq8/I3ne73ewfJCnBWRg6jMfwsfKLDw5ekHsvCcWo1HDdXghEg4xiQCFTP6
+2I6wZBTUlhBZwVtZTZ5kZMZagrULy+Uf9A867vnj/VLGCMxEh9EQcXvYPgBgwC0x
+NCjCAzZff9tOnqWBSNSkc+X2Q0Q6UVHURjs0tvubUqCUEL5axev0QZ8H9hXyVAcr
+HX49hebteVh+maoUBsPAKE4fh00u8XQy/919edEeP2tzEiOHMXsfOY1gYe6PC8Md
+JTOlda2s0DcUhAIncg1JPoTP9RSUS0hp00eh/5hpHPe2ciLRZ3v5OzOtXeno5SpZ
+qsHCoqQNtHYU7CUOQ6TSW0I/kHJQ5+P1mXKKBEJTqsUHLjCGAOQFR/7m+2x3HhCd
+Fe/mwDr0wbp/Tr9M6JwMmcDaMeLZStJ0xlbq3MdNt88EUZUwSPAqNNl65ZPgjbsr
+MOjv4V2GAbsaP59w6SP19LXGSbYdRajTp13v/3dSC1LaEnicVB/6zlf+SsYlKTQ1
+moJ/cUB1/l/v6ZgKBekExr2rjQNIHubWQExgQnP0/k232c5C7CS/MNhtXtWNoQ1H
+i6OXewjfUIFYeeKcnXyCXAfa9zV8dq0k5UW7VRr9nRcwod5B/E9Kzcf5EPYNtac1
+3PypCE5d1c2NLbn8HB49CpcTJ8UOJInN8rptn7d6YFBzCLyYI6PhaMJyJ6USx67J
+zOg+mHkCIQsVl8xu2pW0giwJI0M9GdrtuZS9bQ0n8cCx3KQZi5+86Bhx92zffGE+
++1ISbbaFggRQIfzngPPXUixA+9wo6xHeyRweRUdhfEOSh9iNEiOSyEUQm3SeAa8x
+zv/aKAQpsvgqmDNlIWwynpkBgLJwpDZ5Ejggvh6O8iq2Sd0ElyVEMpACThmHwEZJ
+cCO4jwPjEwGfn/i/4YhaPW04QTJhCLVxI1Wam71Jod5SuBn8d1CyHKy994KK2a86
+rfaXccBT8rsYrQ60hDkX7pM441KPeg9U6roUEYa4dAoR1/QCj4AA4niCECuS+j4S
+C77fp9vcCVIiZbAm8xw8Qe6Y83/89CKYGI7J48rR8pEtQRHwMBE8MFKI7S2LX9lt
+HyrEsMb4mLWufb21ghP/LcK5mvnjPUxi1ip3LCzYq0sAU8MlGQK/DvY4JC5hiNnY
+a4vgrLq1fLdZtFroOfCn+XPvb4iufPbvzMIk8GSOVaKVrmxAX3jG72fUfKIWz3f6
+v5RvaiBJMOU4l3HQ6oQ2f0hTYAL5LueodLvEbw70IJWa9Ta1pNKqnHANvfkQPW07
+WVSGSm4PeTOPErdUNGbSJjkfgKCgublm2ec7orZ1+AZIMcKboTUGZ19B90tTjxCY
+0toc7imOoGsVFjCFRkIF/f75s08srx3chBt0tgwcC16fvgCL2YuJJV23dlVacwy+
+UQCcHZbp3BN9wSVVDrqLP2lN13kxu7oWLNK4VbThz4WNZ/Vjd53pBKI0IOJMWaI1
+015gE9jGFO2H4oXedM1OPpnMywdzzT8sC1a40KvR67TPdxvvbHhgYzMavpjZceJV
+Grks8p4uM6XWQD/MwcFotOI6FDyyyssHWQfubWV/Qik6drN5pQhMa5JjIhyxQXIl
+cB4zrbSAqVslcex2jRzbuAgLLngcadETG4Kp9xfae341cPZHKLFfXvEun7c1Ulol
+i2acAhQNXnlndhJvM4t1Xg8UFFNGyKGbtdMaZ4K7HhYEtIGTR9CONP3qso8ffRNg
+XidwIQrk5fSSFbzgrAEDJHGBTm+tOnjFdGymWfuNIgUJir6SLOHotOZTIoo109Fl
+GpWwTFG0wXI4MmN/5nCqcFc/MMQRxBvRiUnYL5ry+M3ow4Drc7opOrgoECgQ/m4a
+k08sjzUE3i5eDEEwAVeiSN/7jmDpmGLEeB2egitR4lvAMQVjySzIVxpXXVK2icjC
+qrHFb7mZxpIzHzVO9TioDGG9zfPW8zZjl/U8Gvnq6oxyYNcUWwESVSt6/Cx/tHlI
+HZgo5mpMjHn/6FLvNCMXtVsSG3Y95l8njkffMYO3MSNhlsQm2O6skqF2k444fOtG
+eiFogFyRf20PUP4RF5JJ0VH2xydKnsRr4tA1s+Gw+OEj5PvKt6HGasKz37gPmCxX
+a40RRTApGDVlNOfPHakNeOmoh/5Wse+N6WKW38nE0lIaN41+fJs4TaxwNT95pvEM
+MBgWycsyQ5QBOYi1v8ICWggHICt2Dv6DPA6LAyeaT6+E/Pg/4W6UB0JTJfYQ0kS4
+GuBty14ZoifjMqycJsVvh5Tl4liEH/eq17hHCxqufUC62Rzd650Au1zNxb3BZ/g9
+vOEPvTNuBIHX1HtVzGfbtSoJ1XldWf79ApcOYahlRqq7+oX223YkICmt8tcc02Be
+lqgrMyF2XmXF/Dc6hv5NxAwO4n22PmlcWTMw7DrzNI8QPCGbbhWvFmKtWyBtans6
+Blhw3yIPLCcggECYcas0/+3HTO5R7MbRiGh3w6V37AWkaNglbKT6ELWT79Xb4joD
+SvHLdWMYFzQ5XtlkTmmWujgVZSdgLYauXcC9PnlKvUtzpQL56r884OrocCFHKI3W
+oDA8cmRfP6jkjafK6rNVv5GrJ5oF5pE03ce/vdhjdvWX4Ldi6/ehPI+HaDGe8HI2
+NzbtaSbFL35NeniBOveQJd3fVuDErEQN4FFFAHDOblCXqp8Bp8wIxIIyoydtPTrf
+LAEsY3DeIR+g2N7thMt5e6eLQmPvDV5CMJwJmpyREwluVRn8InAP+dXqSMWV4uLJ
+TFIZeElDhX45UXSQqaTwZbjA/+e64C0pLCIcvVWSA1FvnJgEJLHAfSoD1gxFhfPY
+/o0lRvBj9T4lYE5P7yxtJxyNjDo6ER3hLXZeBJj38D2ieA04rxFJgmgk4GRm8pgt
+Kf9OusVmRElBi5A1n/NQ1fXWSXDgjNy5e5WMCoWt0pIqr0fTIv+iEidDINcQDMNp
+XQDQUb3MEJXtblHNSj6wAwprdlm4FaoOnwqbXtLNXa7K5mh1dmJk9zMbxVzn1KR4
+e6Y1bNAklD/JyjK+Gki7a4qTpqs1WcdPe+/77cwsJJfaInab/n1huIY16PuOW/MT
+voDCQXabXtfbyP6zNeysJr9AcPTusdpqTHvm3+1BwCBICw1wxjrA72ASagfHuue7
+0SMBnGkN87falYZZSR3dU0dvrmxNZ6Gl1DBCHt2iF1ttelGgWzLuBOaDvaRAz2uN
+a/w1wsIicFslxOPLA2nAa8msNlc6PCQ10x32ryUmlvcSvlhAgLhq43a0HqDBwhb1
+iXR11sECLsTgX9iK/Zp/wXjfHSrV1QEUPPbBCy10Vyx/uah41rreMI365JtNxH7P
+x3tHGT4INnLwRjYtXbqkH2qnZwSTnPyRfzntXkxgbSC0LDvVuay2iXvIouKxBMgB
+mY6dv/N7DdkeoYW4V0cJ0pz9VjHK9wgqNqqwarDRUNW3k0TI1ZSekRPSY0pJ4PhR
+vEwqJpkpw4oExBDiKQ5cpbS+jSDczX8EVXKS/w4nLplzr1lQdJNeY5lyvz2ywv4t
+GHE+XebJPpFEW0/A8bW4B4u1MpmD+pdlxnBOGwJkTp8lsPbZnLbxQOMqLLepB+GC
+yFEaV8SY3b/R8ZvAWWrJO2fumc8MexnbWRki7w1pr2vW0rCRK8wDV6fV3ccWE5dk
+P7wfGUN/9lP0RDBDAzsR59tD6MX2rO+AJMRX45GAvpa7k9xtdiBI4M/4tbivzgTY
+kWBwgMde0UjKFKV79xYqWCHxkexCTK3uCE0XL5uymMpjLXcmwNm43RijuqJ8V3JI
+gZ+lds4u0mSqhV4dMz6bOljHqwzsBo/sxFibqTO+8oeNlnT2bEKeleMlGeiLgQ1v
+9cTcf3DkOPS7k+tPFLtRu68lhV3D/5V5+dbpIXZFyTfAX4hvo+E8DkPF1OJnivud
+hPljB4hP9tLMJK5yUgneh1PqjXgxV2FH1wWjqhjJhEzZvQoqC325OtblvIDw8Fuv
+hpDhL0Pi3PIe0EOjhXnwLUVT+jmjSPhxk4Z5qHhd5RZnRV0yVV1NbUWbtedQY4l0
+IltOoAkTr7/rbsi8nnMv+9TRbS175A/czJduZ7QYn8vNLxPEArDZ5PxixL9ZeXvO
+I3nfp19LBzuk6ejQmu6W0UKUV5XL+KZYlExbEpC4y8jK7+IxiarEBL0jc1Zuni2j
+Y8rwovdNqzOhH5j6uUN/8ogElGZBeu7MU+li7gdgy7y5T5tD7HcuNG0VeZX1ovuW
+s6t3uAN7hYMkr9IlNUoZYf1YMdjZlrMIWbcvT8gZ8SUZOxIKb7950thNgw1getHU
+KTNNubA/8IaXcGkOKfCNzRf1m5RFW2J8BE/EO4APlixH8bi10ETp+PLhuwh2R+nF
+I1it/8ei5sjHYcP4NEPXojw4KNHtVqiJt54JYBzif2A5nlVkw31PKfskKhBcJGhp
+KP14hk8k0V+/aC/ps5X/NweVzy9oWz3Nb32FAKAEudtrhkSTzErEfJy+B4swheBr
+qpbtlhx04FB3cZ2m/KSPDWTsLPnGS2jqeg6kYt+dVxoKDlqsXHUk/cNuAJShi/t0
+xkYMUtiRnMsQp1eXOa93Qvqv5TMxFGADTHfmyOVo0WjbKo6+6g6UerIK91q4xA3y
+aHipXHoYDiFjO2qW4hXlIqP/UcK2UbMuwN0qJo78lHKy6T5zvFUEgrz3UTo2KZJV
+yQswUss2BCUC0I21OLy47cRmW9uiP0Ep2eQGLOlmQhj/z6V7t1k+T6z1DVcso8eX
+eOs7SoFafxWGvc/ZRcnN0cYDtgj3HQdQ0l+4NNiU8hP6vjxxd9b8t6KOxgvDPTti
+tqqF3zH00tS9sT+h5pbCHWI4uO5nCGUve+03s52hBAdvmnR8F3WfybmthvUwZ8Cb
+P19Gik7hngehKD6iEGqEwcjW8QlSIV7oVNn9XtaPmXA0/NsYKPlwKNUTXsX6p6AP
++h1XcrObOybvN1XsCqNP0A6JbGdi54dYZTahuBeWuOtHiUcAldUmsLnI/c3pmHFk
+x5t/4FSg8U9RG30xVkilGSzKk3GmxrzpKh+l1FxpmyBE5hCqMbxSUQKw9wCd+1+B
+W8Xypae4rJlkZQ+GvWJUHkBzD0qqD5dsxdtwOUkaZF1y1k5gcG9ctb1we4EVrZma
+mAN+opaAeU9xIR1729JfBraY+1bNJ+IwAcRB9PKW07+oEU0vnKk8IOMax+MSmleu
+lgc0JUKFMz2N3gj7JoifMrPOvNEAASTQkAQMI6fX2vYNOEUGFoxcB7RNSwNd5Nrg
+Y1xPAPNkeePL9qZBPuQ2n1ZMHWd6tHuvlYJh0v3Qf3We87WcG4eYQqVWlXarbhW5
+SSok+yV4H/Bx8g5xUjzxWoEf4b4CpvfImnuODbQLKMXE38MrSaGGh47eDl+2MxBt
+fL/XqmfKmqA1ycDWRTUrpAO61Zx/e9aG/r01XIEzNNH5KDZqJQ/V7/+LHir9MGVQ
+njBRKoqgTk+cc8rPTRvhz+LIuxcsk9BnxSBfCzLAzG3LCTf8fIimS70qnxkeQwOi
+BZwTDMzMEsT/VOLCWyNW0FSOGND286XJQ7jGIXfiu2shlhyJob2xcIqwOEb+oIEU
+hEP5rLsTUt/wwG9GSyuC5CVM/IpJg2Hs/nbfOybhotCU0TYt7/88CyaZRUE4562z
+GWRkhKk6NoFsbOdmju8Z+JJqHqDsIfYdXl4H0mjazWX5sI8U52aZzuUatTQlamNu
+KdSe3JW/M93jKHyzuQgIbotysA2OVTjPCVLzCV32hgi6vyicnL5wMBBRhznmCd90
+Kmi3V4BKWli4LDSCwo7we+WlG4l6EzKeYKdFaznsDl4YLS4FhdwkHQXQrmxsBIjh
+be9+R8ni/p3Ho40Q+qadgDG2uqUiepoRQ1cTYLT+cw/8Dh1Q/4po6tP+TWcvQMW3
+JaXc314DRBm39jUYgJ77v1nmPJeN4yxKkVh0L1xV/DVE7Oa5f5Zh6ndkA1OMSQ00
+Pum+d+l48OtzJ43c6xcLsea2OLFcI1GweCvoYggBkqgIdmt5g/KKCP5r5Sx0A9l+
+agsYZ65SjRAmilYaggK7soqGoKx1P4+mn9isFKUF9kRHIposuTzFRMu0hTWAMvkT
++Cu7u1S/COYs54DdjDrBCyEat0T5zylGQGgwtfX4TJk37k/KnzNtlreGLCHjC1gC
+r71qWjksl2JnK0DhXBAXjv6GAk9YS5rDxpWiD7J+TxlGxYxKy7iNb80dxs8+VVB6
+kMnp1WftOtxnYVvNo6E41ATQlpCpSvV67VvJ12H9l17LNlYEhzIxrofPDw/DhHQQ
+6cJtPgensVQJkUtTDpuB7iR8UN9y6w/CfLmmxkW5lOBqHpXbxK7NBroc/BXH0f9j
+q1UV0O0E0qDFYpC7W+OFgl8xYHl+alM5dKZENgGAnurnkHpN5hzew20zY+Aa0brc
+81Qz1FLvwMbiwQ9Yn2l2K+4uLu8k9kXRozWKmeuLuMFQm5KoMiS0SRDxykTxree9
+S55Ty5COPXpVtfnIdqo50YMli5cmdOmk3ll66W79uBcZajcwG0F2d/AqXGYZyF3Z
+Mbqqqnn+f7drwpsyG4MavnF85BRIiv7Wf3jvtSP3NegAnapU3eUNwuXyNoziLQVB
+R7csYACkYMaOtin2IZ4oAPJytBcqcWK8qormegS5hfmAf0XypkLzRkTWOyHJ0Rcu
+eksyboBYrUGUSXm05iCVbM1rpcCJq5YKJ25esHD+V3+mmvWasLGVSmDuKmAZ0bwz
+80MT5KnDENkTdLUKmjM4UsOW32LxzMi9p2ggWZSdMxkdpB/IiJtYSqctiVO6J7/K
+jNe3jKhRhJU8IM/jLweIVdLInqPsuBokWeOOEkIXcYldQpDKboPp5+zWWPueca8u
+uxssjiZq0MVGZdvtbSYJZ803VdxQsyERZ9Tx5F+6DoFfkKbkiVTIhZ4csS1YH+rZ
+7L084OJtp9SoLmmOzvvfK4Jr1b+ib9GYL3Koyfs7B8Y=
