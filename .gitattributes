@@ -9,4 +9,6 @@
 *.tcp  filter=crypt diff=crypt
 *.tps  filter=crypt diff=crypt
 *.adoc  filter=crypt diff=crypt
+*.eps  filter=crypt diff=crypt
+*.graffle  filter=crypt diff=crypt
 
