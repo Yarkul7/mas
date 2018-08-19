@@ -11,4 +11,10 @@
 *.adoc  filter=crypt diff=crypt
 *.eps  filter=crypt diff=crypt
 *.graffle  filter=crypt diff=crypt
-
+*.html  filter=crypt diff=crypt
+*.json  filter=crypt diff=crypt
+*.xml  filter=crypt diff=crypt
+*.txt  filter=crypt diff=crypt
+*.rst  filter=crypt diff=crypt
+*.md  filter=crypt diff=crypt
+*.db  filter=crypt diff=crypt
