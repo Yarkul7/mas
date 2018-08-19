@@ -1,0 +1,653 @@
+<?xml version="1.0"?><OWASPZAPReport version="2.7.0" generated="Sun, 19 Aug 2018 10:46:24">
+<site name="https://crimdrac-juice-shop.herokuapp.com" host="crimdrac-juice-shop.herokuapp.com" port="443" ssl="true"><alerts><alertitem>
+  <pluginid>10015</pluginid>
+  <alert>Incomplete or No Cache-control and Pragma HTTP Header Set</alert>
+  <name>Incomplete or No Cache-control and Pragma HTTP Header Set</name>
+  <riskcode>1</riskcode>
+  <confidence>2</confidence>
+  <riskdesc>Low (Medium)</riskdesc>
+  <desc>&lt;p&gt;The cache-control and pragma HTTP header have not been set properly or are missing allowing the browser and proxies to cache content.&lt;/p&gt;</desc>
+  <instances>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE_QD2</uri>
+  <method>GET</method>
+  <param>Cache-Control</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/api/Challenges/?name=Score+Board</uri>
+  <method>GET</method>
+  <param>Cache-Control</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/node_modules/flag-icon-css/flags/4x3/gb.svg</uri>
+  <method>GET</method>
+  <param>Cache-Control</param>
+  <evidence>public, max-age=0</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/rest/product/1/reviews</uri>
+  <method>GET</method>
+  <param>Cache-Control</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE_kgl</uri>
+  <method>GET</method>
+  <param>Cache-Control</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE_N_Q</uri>
+  <method>GET</method>
+  <param>Cache-Control</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLF12Zy</uri>
+  <method>GET</method>
+  <param>Cache-Control</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/node_modules/flag-icon-css/flags/4x3/jp.svg</uri>
+  <method>GET</method>
+  <param>Cache-Control</param>
+  <evidence>public, max-age=0</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE-L2c</uri>
+  <method>GET</method>
+  <param>Cache-Control</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLEzqO1</uri>
+  <method>GET</method>
+  <param>Cache-Control</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE_qvy</uri>
+  <method>GET</method>
+  <param>Cache-Control</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/api/Challenges/</uri>
+  <method>GET</method>
+  <param>Cache-Control</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/rest/product/24/reviews</uri>
+  <method>GET</method>
+  <param>Cache-Control</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/node_modules/flag-icon-css/flags/4x3/lv.svg</uri>
+  <method>GET</method>
+  <param>Cache-Control</param>
+  <evidence>public, max-age=0</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/api/Products/26?d=Sat%20Aug%2018%202018</uri>
+  <method>GET</method>
+  <param>Cache-Control</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE-Ivy&amp;sid=EnffXyich3PsIV98DiWH</uri>
+  <method>POST</method>
+  <param>Cache-Control</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE-VSI&amp;sid=dVgZw4h3YvsURiDBDjD_</uri>
+  <method>POST</method>
+  <param>Cache-Control</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/rest/product/8/reviews</uri>
+  <method>GET</method>
+  <param>Cache-Control</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/node_modules/cookieconsent/build/cookieconsent.min.css</uri>
+  <method>GET</method>
+  <param>Cache-Control</param>
+  <evidence>public, max-age=0</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE_wGj</uri>
+  <method>GET</method>
+  <param>Cache-Control</param>
+  </instance>
+  </instances>
+  <count>134</count>
+  <solution>&lt;p&gt;Whenever possible ensure the cache-control HTTP header is set with no-cache, no-store, must-revalidate; and that the pragma HTTP header is set with no-cache.&lt;/p&gt;</solution>
+  <reference>&lt;p&gt;https://www.owasp.org/index.php/Session_Management_Cheat_Sheet#Web_Content_Caching&lt;/p&gt;</reference>
+  <cweid>525</cweid>
+  <wascid>13</wascid>
+  <sourceid>3</sourceid>
+</alertitem>
+<alertitem>
+  <pluginid>3</pluginid>
+  <alert>Session ID in URL Rewrite</alert>
+  <name>Session ID in URL Rewrite</name>
+  <riskcode>2</riskcode>
+  <confidence>3</confidence>
+  <riskdesc>Medium (High)</riskdesc>
+  <desc>&lt;p&gt;URL rewrite is used to track user session ID. The session ID may be disclosed via cross-site referer header. In addition, the session ID might be stored in browser history or server logs.&lt;/p&gt;</desc>
+  <instances>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=websocket&amp;sid=DcpFgwMkdKGTyAyADpET</uri>
+  <method>GET</method>
+  <param>sid</param>
+  <evidence>DcpFgwMkdKGTyAyADpET</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE_NfK&amp;sid=MdCbywJqZdcnRSBfDk0T</uri>
+  <method>POST</method>
+  <param>sid</param>
+  <evidence>MdCbywJqZdcnRSBfDk0T</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=websocket&amp;sid=2BGpfYtiVrHfsXahDnHD</uri>
+  <method>GET</method>
+  <param>sid</param>
+  <evidence>2BGpfYtiVrHfsXahDnHD</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=websocket&amp;sid=huxTim7B90oHAGTeDlVk</uri>
+  <method>GET</method>
+  <param>sid</param>
+  <evidence>huxTim7B90oHAGTeDlVk</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=websocket&amp;sid=eV4jJ-UNiSfgcp70DkIy</uri>
+  <method>GET</method>
+  <param>sid</param>
+  <evidence>eV4jJ-UNiSfgcp70DkIy</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=websocket&amp;sid=QKtwum7nbwnEBYfBDhxX</uri>
+  <method>GET</method>
+  <param>sid</param>
+  <evidence>QKtwum7nbwnEBYfBDhxX</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=websocket&amp;sid=EnffXyich3PsIV98DiWH</uri>
+  <method>GET</method>
+  <param>sid</param>
+  <evidence>EnffXyich3PsIV98DiWH</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=websocket&amp;sid=gHbOioccS-l635n-DsDy</uri>
+  <method>GET</method>
+  <param>sid</param>
+  <evidence>gHbOioccS-l635n-DsDy</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=websocket&amp;sid=tYFQtEjgF1Vf6fjTDmFS</uri>
+  <method>GET</method>
+  <param>sid</param>
+  <evidence>tYFQtEjgF1Vf6fjTDmFS</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE-VSI&amp;sid=dVgZw4h3YvsURiDBDjD_</uri>
+  <method>POST</method>
+  <param>sid</param>
+  <evidence>dVgZw4h3YvsURiDBDjD_</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=websocket&amp;sid=Kkmr-jUf5J6JLx8uDsBC</uri>
+  <method>GET</method>
+  <param>sid</param>
+  <evidence>Kkmr-jUf5J6JLx8uDsBC</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=websocket&amp;sid=dVgZw4h3YvsURiDBDjD_</uri>
+  <method>GET</method>
+  <param>sid</param>
+  <evidence>dVgZw4h3YvsURiDBDjD_</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=websocket&amp;sid=MPPRHwKobUGx_6VwDm0i</uri>
+  <method>GET</method>
+  <param>sid</param>
+  <evidence>MPPRHwKobUGx_6VwDm0i</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=websocket&amp;sid=HsNrprkMlFi9BU08DiTA</uri>
+  <method>GET</method>
+  <param>sid</param>
+  <evidence>HsNrprkMlFi9BU08DiTA</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=websocket&amp;sid=KQ0vWaPnkyfB1srYDjoy</uri>
+  <method>GET</method>
+  <param>sid</param>
+  <evidence>KQ0vWaPnkyfB1srYDjoy</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=websocket&amp;sid=Lgg2Hf2Nz0GEawQyDso-</uri>
+  <method>GET</method>
+  <param>sid</param>
+  <evidence>Lgg2Hf2Nz0GEawQyDso-</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=websocket&amp;sid=GuK_a5U2jD9Z1CkRDkQd</uri>
+  <method>GET</method>
+  <param>sid</param>
+  <evidence>GuK_a5U2jD9Z1CkRDkQd</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=websocket&amp;sid=eZyHNySjRU0NjD3pDjoc</uri>
+  <method>GET</method>
+  <param>sid</param>
+  <evidence>eZyHNySjRU0NjD3pDjoc</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=websocket&amp;sid=YXHGgq-elERrkf4BDmjj</uri>
+  <method>GET</method>
+  <param>sid</param>
+  <evidence>YXHGgq-elERrkf4BDmjj</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=websocket&amp;sid=04siUL0khzXLjwKCDkZX</uri>
+  <method>GET</method>
+  <param>sid</param>
+  <evidence>04siUL0khzXLjwKCDkZX</evidence>
+  </instance>
+  </instances>
+  <count>54</count>
+  <solution>&lt;p&gt;For secure content, put session ID in a cookie. To be even more secure consider using a combination of cookie and URL rewrite.&lt;/p&gt;</solution>
+  <reference>&lt;p&gt;http://seclists.org/lists/webappsec/2002/Oct-Dec/0111.html&lt;/p&gt;</reference>
+  <cweid>200</cweid>
+  <wascid>13</wascid>
+  <sourceid>3</sourceid>
+</alertitem>
+<alertitem>
+  <pluginid>10011</pluginid>
+  <alert>Cookie Without Secure Flag</alert>
+  <name>Cookie Without Secure Flag</name>
+  <riskcode>1</riskcode>
+  <confidence>2</confidence>
+  <riskdesc>Low (Medium)</riskdesc>
+  <desc>&lt;p&gt;A cookie has been set without the secure flag, which means that the cookie can be accessed via unencrypted connections.&lt;/p&gt;</desc>
+  <instances>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLF0gJz</uri>
+  <method>GET</method>
+  <param>io</param>
+  <evidence>Set-Cookie: io</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE-k9E</uri>
+  <method>GET</method>
+  <param>io</param>
+  <evidence>Set-Cookie: io</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE-Ivy&amp;sid=EnffXyich3PsIV98DiWH</uri>
+  <method>POST</method>
+  <param>io</param>
+  <evidence>Set-Cookie: io</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLF0Ouu</uri>
+  <method>GET</method>
+  <param>io</param>
+  <evidence>Set-Cookie: io</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE_wGj</uri>
+  <method>GET</method>
+  <param>io</param>
+  <evidence>Set-Cookie: io</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE_6ga&amp;sid=eV4jJ-UNiSfgcp70DkIy</uri>
+  <method>POST</method>
+  <param>io</param>
+  <evidence>Set-Cookie: io</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLEzqO1</uri>
+  <method>GET</method>
+  <param>io</param>
+  <evidence>Set-Cookie: io</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE_qvy</uri>
+  <method>GET</method>
+  <param>io</param>
+  <evidence>Set-Cookie: io</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE-VSI&amp;sid=dVgZw4h3YvsURiDBDjD_</uri>
+  <method>POST</method>
+  <param>io</param>
+  <evidence>Set-Cookie: io</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLF12Zy</uri>
+  <method>GET</method>
+  <param>io</param>
+  <evidence>Set-Cookie: io</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLF0IF7</uri>
+  <method>GET</method>
+  <param>io</param>
+  <evidence>Set-Cookie: io</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE_kgl</uri>
+  <method>GET</method>
+  <param>io</param>
+  <evidence>Set-Cookie: io</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE-ZLP</uri>
+  <method>GET</method>
+  <param>io</param>
+  <evidence>Set-Cookie: io</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE_QD2</uri>
+  <method>GET</method>
+  <param>io</param>
+  <evidence>Set-Cookie: io</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLEzsrp</uri>
+  <method>GET</method>
+  <param>io</param>
+  <evidence>Set-Cookie: io</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE_N_Q</uri>
+  <method>GET</method>
+  <param>io</param>
+  <evidence>Set-Cookie: io</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLF018b</uri>
+  <method>GET</method>
+  <param>io</param>
+  <evidence>Set-Cookie: io</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE-jva&amp;sid=aDx26gzeWGqHtn7ADjoM</uri>
+  <method>POST</method>
+  <param>io</param>
+  <evidence>Set-Cookie: io</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE-ehx</uri>
+  <method>GET</method>
+  <param>io</param>
+  <evidence>Set-Cookie: io</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE_YAu</uri>
+  <method>GET</method>
+  <param>io</param>
+  <evidence>Set-Cookie: io</evidence>
+  </instance>
+  </instances>
+  <count>54</count>
+  <solution>&lt;p&gt;Whenever a cookie contains sensitive information or is a session token, then it should always be passed using an encrypted channel. Ensure that the secure flag is set for cookies containing such sensitive information.&lt;/p&gt;</solution>
+  <reference>&lt;p&gt;http://www.owasp.org/index.php/Testing_for_cookies_attributes_(OWASP-SM-002)&lt;/p&gt;</reference>
+  <cweid>614</cweid>
+  <wascid>13</wascid>
+  <sourceid>3</sourceid>
+</alertitem>
+<alertitem>
+  <pluginid>10021</pluginid>
+  <alert>X-Content-Type-Options Header Missing</alert>
+  <name>X-Content-Type-Options Header Missing</name>
+  <riskcode>1</riskcode>
+  <confidence>2</confidence>
+  <riskdesc>Low (Medium)</riskdesc>
+  <desc>&lt;p&gt;The Anti-MIME-Sniffing header X-Content-Type-Options was not set to &apos;nosniff&apos;. This allows older versions of Internet Explorer and Chrome to perform MIME-sniffing on the response body, potentially causing the response body to be interpreted and displayed as a content type other than the declared content type. Current (early 2014) and legacy versions of Firefox will use the declared content type (if one is set), rather than performing MIME-sniffing.&lt;/p&gt;</desc>
+  <instances>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE_wGj</uri>
+  <method>GET</method>
+  <param>X-Content-Type-Options</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE_qvy</uri>
+  <method>GET</method>
+  <param>X-Content-Type-Options</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE_kgl</uri>
+  <method>GET</method>
+  <param>X-Content-Type-Options</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE_N_Q</uri>
+  <method>GET</method>
+  <param>X-Content-Type-Options</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLF12Zy</uri>
+  <method>GET</method>
+  <param>X-Content-Type-Options</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE_QD2</uri>
+  <method>GET</method>
+  <param>X-Content-Type-Options</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE-L2c</uri>
+  <method>GET</method>
+  <param>X-Content-Type-Options</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLF0gJz</uri>
+  <method>GET</method>
+  <param>X-Content-Type-Options</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLF0Ouu</uri>
+  <method>GET</method>
+  <param>X-Content-Type-Options</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLEzsrp</uri>
+  <method>GET</method>
+  <param>X-Content-Type-Options</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE_YAu</uri>
+  <method>GET</method>
+  <param>X-Content-Type-Options</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE-k9E</uri>
+  <method>GET</method>
+  <param>X-Content-Type-Options</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE-Ivy&amp;sid=EnffXyich3PsIV98DiWH</uri>
+  <method>POST</method>
+  <param>X-Content-Type-Options</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLF0c94</uri>
+  <method>GET</method>
+  <param>X-Content-Type-Options</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE_hH3</uri>
+  <method>GET</method>
+  <param>X-Content-Type-Options</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE-ehx</uri>
+  <method>GET</method>
+  <param>X-Content-Type-Options</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE-ZLP</uri>
+  <method>GET</method>
+  <param>X-Content-Type-Options</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLF07Y7</uri>
+  <method>GET</method>
+  <param>X-Content-Type-Options</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLF03t8</uri>
+  <method>GET</method>
+  <param>X-Content-Type-Options</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLF0B1I</uri>
+  <method>GET</method>
+  <param>X-Content-Type-Options</param>
+  </instance>
+  </instances>
+  <count>55</count>
+  <solution>&lt;p&gt;Ensure that the application/web server sets the Content-Type header appropriately, and that it sets the X-Content-Type-Options header to &apos;nosniff&apos; for all web pages.&lt;/p&gt;&lt;p&gt;If possible, ensure that the end user uses a standards-compliant and modern web browser that does not perform MIME-sniffing at all, or that can be directed by the web application/web server to not perform MIME-sniffing.&lt;/p&gt;</solution>
+  <otherinfo>&lt;p&gt;This issue still applies to error type pages (401, 403, 500, etc) as those pages are often still affected by injection issues, in which case there is still concern for browsers sniffing pages away from their actual content type.&lt;/p&gt;&lt;p&gt;At &quot;High&quot; threshold this scanner will not alert on client or server error responses.&lt;/p&gt;</otherinfo>
+  <reference>&lt;p&gt;http://msdn.microsoft.com/en-us/library/ie/gg622941%28v=vs.85%29.aspx&lt;/p&gt;&lt;p&gt;https://www.owasp.org/index.php/List_of_useful_HTTP_headers&lt;/p&gt;</reference>
+  <cweid>16</cweid>
+  <wascid>15</wascid>
+  <sourceid>3</sourceid>
+</alertitem>
+<alertitem>
+  <pluginid>10016</pluginid>
+  <alert>Web Browser XSS Protection Not Enabled</alert>
+  <name>Web Browser XSS Protection Not Enabled</name>
+  <riskcode>1</riskcode>
+  <confidence>2</confidence>
+  <riskdesc>Low (Medium)</riskdesc>
+  <desc>&lt;p&gt;Web Browser XSS Protection is not enabled, or is disabled by the configuration of the &apos;X-XSS-Protection&apos; HTTP response header on the web server&lt;/p&gt;</desc>
+  <instances>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE-jva&amp;sid=aDx26gzeWGqHtn7ADjoM</uri>
+  <method>POST</method>
+  <param>X-XSS-Protection</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/</uri>
+  <method>GET</method>
+  <param>X-XSS-Protection</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE-Ivy&amp;sid=EnffXyich3PsIV98DiWH</uri>
+  <method>POST</method>
+  <param>X-XSS-Protection</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE_NfK&amp;sid=MdCbywJqZdcnRSBfDk0T</uri>
+  <method>POST</method>
+  <param>X-XSS-Protection</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE-VSI&amp;sid=dVgZw4h3YvsURiDBDjD_</uri>
+  <method>POST</method>
+  <param>X-XSS-Protection</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE_6ga&amp;sid=eV4jJ-UNiSfgcp70DkIy</uri>
+  <method>POST</method>
+  <param>X-XSS-Protection</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLEzq6G&amp;sid=3PjhsMTKjjhvr61QDhfF</uri>
+  <method>POST</method>
+  <param>X-XSS-Protection</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/i18n/de.json</uri>
+  <method>GET</method>
+  <param>X-XSS-Protection</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/public/images/ribbons/forkme_right_%7B%7BgitHubRibbon%7D%7D.png</uri>
+  <method>GET</method>
+  <param>X-XSS-Protection</param>
+  </instance>
+  </instances>
+  <count>9</count>
+  <solution>&lt;p&gt;Ensure that the web browser&apos;s XSS filter is enabled, by setting the X-XSS-Protection HTTP response header to &apos;1&apos;.&lt;/p&gt;</solution>
+  <otherinfo>&lt;p&gt;The X-XSS-Protection HTTP response header allows the web server to enable or disable the web browser&apos;s XSS protection mechanism. The following values would attempt to enable it: &lt;/p&gt;&lt;p&gt;X-XSS-Protection: 1; mode=block&lt;/p&gt;&lt;p&gt;X-XSS-Protection: 1; report=http://www.example.com/xss&lt;/p&gt;&lt;p&gt;The following values would disable it:&lt;/p&gt;&lt;p&gt;X-XSS-Protection: 0&lt;/p&gt;&lt;p&gt;The X-XSS-Protection HTTP response header is currently supported on Internet Explorer, Chrome and Safari (WebKit).&lt;/p&gt;&lt;p&gt;Note that this alert is only raised if the response body could potentially contain an XSS payload (with a text-based content type, with a non-zero length).&lt;/p&gt;</otherinfo>
+  <reference>&lt;p&gt;https://www.owasp.org/index.php/XSS_(Cross_Site_Scripting)_Prevention_Cheat_Sheet&lt;/p&gt;&lt;p&gt;https://blog.veracode.com/2014/03/guidelines-for-setting-security-headers/&lt;/p&gt;</reference>
+  <cweid>933</cweid>
+  <wascid>14</wascid>
+  <sourceid>3</sourceid>
+</alertitem>
+<alertitem>
+  <pluginid>2</pluginid>
+  <alert>Private IP Disclosure</alert>
+  <name>Private IP Disclosure</name>
+  <riskcode>1</riskcode>
+  <confidence>2</confidence>
+  <riskdesc>Low (Medium)</riskdesc>
+  <desc>&lt;p&gt;A private IP (such as 10.x.x.x, 172.x.x.x, 192.168.x.x) or an Amazon EC2 private hostname (for example, ip-10-0-56-78) has been found in the HTTP response body. This information might be helpful for further attacks targeting internal systems.&lt;/p&gt;</desc>
+  <instances>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/dist/juice-shop.min.js</uri>
+  <method>GET</method>
+  <evidence>192.168.99.100:3000</evidence>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/private/fontawesome-all.js</uri>
+  <method>GET</method>
+  <evidence>10.6.2.8</evidence>
+  </instance>
+  </instances>
+  <count>2</count>
+  <solution>&lt;p&gt;Remove the private IP address from the HTTP response body.  For comments, use JSP/ASP/PHP comment instead of HTML/JavaScript comment which can be seen by client browsers.&lt;/p&gt;</solution>
+  <otherinfo>&lt;p&gt;192.168.99.100:3000&lt;/p&gt;&lt;p&gt;192.168.99.100:3000&lt;/p&gt;&lt;p&gt;&lt;/p&gt;</otherinfo>
+  <reference>&lt;p&gt;https://tools.ietf.org/html/rfc1918&lt;/p&gt;</reference>
+  <cweid>200</cweid>
+  <wascid>13</wascid>
+  <sourceid>3</sourceid>
+</alertitem>
+<alertitem>
+  <pluginid>10020</pluginid>
+  <alert>X-Frame-Options Header Not Set</alert>
+  <name>X-Frame-Options Header Not Set</name>
+  <riskcode>2</riskcode>
+  <confidence>2</confidence>
+  <riskdesc>Medium (Medium)</riskdesc>
+  <desc>&lt;p&gt;X-Frame-Options header is not included in the HTTP response to protect against &apos;ClickJacking&apos; attacks.&lt;/p&gt;</desc>
+  <instances>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE_NfK&amp;sid=MdCbywJqZdcnRSBfDk0T</uri>
+  <method>POST</method>
+  <param>X-Frame-Options</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE-Ivy&amp;sid=EnffXyich3PsIV98DiWH</uri>
+  <method>POST</method>
+  <param>X-Frame-Options</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE-VSI&amp;sid=dVgZw4h3YvsURiDBDjD_</uri>
+  <method>POST</method>
+  <param>X-Frame-Options</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE-jva&amp;sid=aDx26gzeWGqHtn7ADjoM</uri>
+  <method>POST</method>
+  <param>X-Frame-Options</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLE_6ga&amp;sid=eV4jJ-UNiSfgcp70DkIy</uri>
+  <method>POST</method>
+  <param>X-Frame-Options</param>
+  </instance>
+  <instance>
+  <uri>https://crimdrac-juice-shop.herokuapp.com/socket.io/?EIO=3&amp;transport=polling&amp;t=MLEzq6G&amp;sid=3PjhsMTKjjhvr61QDhfF</uri>
+  <method>POST</method>
+  <param>X-Frame-Options</param>
+  </instance>
+  </instances>
+  <count>6</count>
+  <solution>&lt;p&gt;Most modern Web browsers support the X-Frame-Options HTTP header. Ensure it&apos;s set on all web pages returned by your site (if you expect the page to be framed only by pages on your server (e.g. it&apos;s part of a FRAMESET) then you&apos;ll want to use SAMEORIGIN, otherwise if you never expect the page to be framed, you should use DENY. ALLOW-FROM allows specific websites to frame the web page in supported web browsers).&lt;/p&gt;</solution>
+  <reference>&lt;p&gt;http://blogs.msdn.com/b/ieinternals/archive/2010/03/30/combating-clickjacking-with-x-frame-options.aspx&lt;/p&gt;</reference>
+  <cweid>16</cweid>
+  <wascid>15</wascid>
+  <sourceid>3</sourceid>
+</alertitem>
+</alerts></site></OWASPZAPReport>
