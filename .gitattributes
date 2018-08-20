@@ -18,3 +18,4 @@
 *.rst  filter=crypt diff=crypt
 *.md  filter=crypt diff=crypt
 *.db  filter=crypt diff=crypt
+*.png  filter=crypt diff=crypt
